@@ -245,4 +245,4 @@ def get(start,end,edgeId,edgeIp,edgePort,edgeReliability,fogIp,fogPort, verbose 
     jsonResponse = JSON_RESPONSE
 
     JSON_RESPONSE = dict()
-    return jsonResponse
+    return json.dumps(jsonResponse)

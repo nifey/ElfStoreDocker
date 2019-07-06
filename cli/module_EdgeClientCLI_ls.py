@@ -314,7 +314,7 @@ def printMbidMap(mbids,groupBy):
         ## before printing. This is because there may be redundant edgeId values
         ## for each mbId key value.
         for mbId in mbids.keys():
-            mbids[mbid].sort()
+            mbids[mbId].sort()
             print("Microbatch "+str(mbId)+": "+str(list(set(mbids[mbId]))) + "\n")
 
 
