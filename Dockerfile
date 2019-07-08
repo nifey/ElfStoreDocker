@@ -1,7 +1,14 @@
-FROM centos
+FROM centos:7
 ENV container docker
 
-RUN mkdir -p /edgefs/logs
+RUN mkdir /edgefs
+COPY preload/ /edgefs/
+COPY preload/cli/cluster.conf /
+RUN mkdir /edgefs/data
+RUN mkdir /edgefs/logs
+
+RUN yum repolist
+RUN yum -y update
 
 RUN yum install -y iproute
 RUN yum install -y traceroute
@@ -16,11 +23,16 @@ RUN yum install -y openssh-clients
 RUN yum install -y epel-release
 RUN yum install -y fping
 RUN yum install -y htop
+RUN yum install -y vim
+RUN yum install -y wget
 
+RUN yum install -y https://centos7.iuscommunity.org/ius-release.rpm
+RUN yum install -y python36u python36u-libs python36u-devel python36u-pip
+RUN yum install -y which gcc
+RUN yum install -y openldap-devel
 
-RUN yum install -y python-pip
-RUN pip install thrift
-RUN pip install numpy
-
-RUN mkdir /edgefs/data/
-COPY extras/ /edgefs/
+RUN pip3.6 install --upgrade pip
+RUN pip3.6 install psutil==5.6.3
+RUN pip3.6 install six==1.12.0
+RUN pip3.6 install termcolor==1.1.0
+RUN pip3.6 install thrift==0.11.0
