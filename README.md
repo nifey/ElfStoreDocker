@@ -1,7 +1,8 @@
 ### NOTE
 * The IP addresses have been changed for the fogs and edges based on the network created using `docker network`.
 * The above changes are made in the edge-config-files/ and cluster.conf
-* This setup is currently under testing.
+* Put the edgefilesystem-0.1-jar-with-dependencies.jar file, after compilation, in cli/target/ folder.
+* This testing environment is currently under development.
 
 ### Setup
 ```
