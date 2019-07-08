@@ -21,7 +21,7 @@ from pprint import pprint
 import hashlib
 import contextlib
 
-if os.path.isdir("./DataAndLogs") == False:
+if os.path.isdir("") == False:
     os.mkdir("./DataAndLogs")
 
 ## the file logs.txt will be created later
