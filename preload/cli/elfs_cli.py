@@ -15,6 +15,7 @@ import module_EdgeClientCLI_get
 import module_EdgeClientCLI_put
 import module_EdgeClientCLI_ls
 import module_EdgeClientCLI_find
+import module_EdgeClientCLI_putlarge
 
 ## Global parameters
 EDGE_ID = int()
