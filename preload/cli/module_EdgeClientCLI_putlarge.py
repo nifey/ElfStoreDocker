@@ -622,7 +622,7 @@ def putlarge(path,streamId,start,metadataLocation,fogIp,fogPort,edgeId,clientId,
 
     while(readFiles<10):
         print("The file being read is ",filePath+str(readFiles)+".txt")
-        file = open(filePath+"microbatch"+str(readFiles)+".txt",'rb')
+        file = open(filePath+"/"+"microbatch"+str(readFiles)+".txt",'rb')
         byteArray.append(file.read(10000000))
         readFiles = readFiles + 1
         file.close()
