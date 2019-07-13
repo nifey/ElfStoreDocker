@@ -608,14 +608,23 @@ def putlarge(path,streamId,start,metadataLocation,fogIp,fogPort,edgeId,clientId,
     print("here")
     print("The stream reliability needed is : ", str(STREAM_RELIABILITY))
 
-    filePath = path
-    fogReplicaMap = {} #here is the dictionary
-    yetAnotherMap = {}
-
 
     metaKeyValueMap = dict()
     if metadataLocation != None:
         metaKeyValueMap = json.load(open(metadataLocation,'r'))
+
+    if setLease == "1":
+        setLease = True
+    elif setLease == "0":
+        setLease = False
+
+    global SET_LEASE
+    SET_LEASE = setLease
+
+    filePath = path
+    fogReplicaMap = {} #here is the dictionary
+    yetAnotherMap = {}
+
 
     byteArray = []
     readFiles = 0
