@@ -20,11 +20,11 @@ from pprint import pprint
 import hashlib
 import contextlib
 
-if os.path.isdir("/edgefs/logs") == False:
-    os.mkdir("/edgefs/logs")
+if os.path.isdir("./DataAndLogs") == False:
+    os.mkdir("./DataAndLogs")
 
 ## the file logs.txt will be created later
-BASE_LOG = "/edgefs/logs/"
+BASE_LOG = "./DataAndLogs/"
 FOG_SERVICE = 0
 
 FOG_IP = str()
@@ -303,7 +303,7 @@ def printMbidMap(mbids,groupBy):
         for edgeId in mbids.keys():
             print("Edge "+str(edgeId)+":")
             mbids[edgeId].sort()
-            print(" ".join(str(x) for x in mbids[edgeId]) + "\n")
+            print(" ".join(str(x) for x in set(mbids[edgeId])) + "\n")
 
     ## For groupBy = 2 (i.e group by mbid), the format resembles as follows :
     ## Microbatch 1: []

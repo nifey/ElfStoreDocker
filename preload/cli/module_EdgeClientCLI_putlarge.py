@@ -268,9 +268,9 @@ class EdgeClient:
         ## psutil (process and system utilities) is a cross-platform library for
         ## retrieving information on storage running processes.
         if( hasattr(psutil,'disk_usage')):
-            total = psutil.disk_usage('/').total
-            free = psutil.disk_usage('/').free
-            used = psutil.disk_usage('/').used
+            total = psutil.disk_usage('/edgedatatemp').total
+            free = psutil.disk_usage('/edgedatatemp').free
+            used = psutil.disk_usage('/edgedatatemp').used
             print("Disk ",free," : ",total," : ",used)
 
             util = used/float(total)*100

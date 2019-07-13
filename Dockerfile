@@ -25,6 +25,7 @@ RUN yum install -y fping
 RUN yum install -y htop
 RUN yum install -y vim
 RUN yum install -y wget
+RUN yum install -y unzip
 
 RUN yum install -y https://centos7.iuscommunity.org/ius-release.rpm
 RUN yum install -y python36u python36u-libs python36u-devel python36u-pip
