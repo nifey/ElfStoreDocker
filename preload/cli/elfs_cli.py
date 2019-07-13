@@ -88,9 +88,10 @@ class elfsCLI(Cmd):
         ## parse the tokens using the previously defined #global parser
         tokens = putlarge_parser.parse_args(line)
 
-        splitChoice = str(0)
         setLease = str(0)
 
+        if tokens.setLease == True:
+            setLease = str(1)
 
         if tokens.v == True:
             module_EdgeClientCLI_putlarge.putlarge(tokens.path,tokens.streamId,tokens.start,tokens.metadata, tokens.fogIp,tokens.fogPort,tokens.edgeId,tokens.clientId,tokens.numwrites,setLease,True)
