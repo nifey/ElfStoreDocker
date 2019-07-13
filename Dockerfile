@@ -4,7 +4,8 @@ ENV container docker
 RUN mkdir /edgefs
 COPY preload/ /edgefs/
 COPY preload/cli/cluster.conf /
-RUN mkdir /edgefs/data
+RUN mkdir /edgefs/testData
+COPY TestData/ /edgefs/testData
 RUN mkdir /edgefs/logs
 
 RUN yum repolist
