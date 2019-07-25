@@ -223,11 +223,13 @@ class Iface(object):
         """
         pass
 
-    def read(self, microbatchId, fetchMetadata):
+    def read(self, microbatchId, fetchMetadata, compFormat, uncompSize):
         """
         Parameters:
          - microbatchId
          - fetchMetadata
+         - compFormat
+         - uncompSize
         """
         pass
 
@@ -332,7 +334,23 @@ class Iface(object):
     def requestAllNeighbors(self):
         pass
 
-    def requestMbIDLocationMap(self):
+    def requestEdgeMicrobatchMap(self):
+        pass
+
+    def requestCompFormatSize(self, mbId):
+        """
+        Parameters:
+         - mbId
+        """
+        pass
+
+    def findStreamUsingQuery(self, metaKeyValueMap, checkNeighbors, checkBuddies):
+        """
+        Parameters:
+         - metaKeyValueMap
+         - checkNeighbors
+         - checkBuddies
+        """
         pass
 
     def findBlockUsingQuery(self, metaKeyValueMap, checkNeighbors, checkBuddies):
@@ -1211,20 +1229,24 @@ class Client(Iface):
             return result.success
         raise TApplicationException(TApplicationException.MISSING_RESULT, "find failed: unknown result")
 
-    def read(self, microbatchId, fetchMetadata):
+    def read(self, microbatchId, fetchMetadata, compFormat, uncompSize):
         """
         Parameters:
          - microbatchId
          - fetchMetadata
+         - compFormat
+         - uncompSize
         """
-        self.send_read(microbatchId, fetchMetadata)
+        self.send_read(microbatchId, fetchMetadata, compFormat, uncompSize)
         return self.recv_read()
 
-    def send_read(self, microbatchId, fetchMetadata):
+    def send_read(self, microbatchId, fetchMetadata, compFormat, uncompSize):
         self._oprot.writeMessageBegin('read', TMessageType.CALL, self._seqid)
         args = read_args()
         args.microbatchId = microbatchId
         args.fetchMetadata = fetchMetadata
+        args.compFormat = compFormat
+        args.uncompSize = uncompSize
         args.write(self._oprot)
         self._oprot.writeMessageEnd()
         self._oprot.trans.flush()
@@ -1673,18 +1695,18 @@ class Client(Iface):
             return result.success
         raise TApplicationException(TApplicationException.MISSING_RESULT, "requestAllNeighbors failed: unknown result")
 
-    def requestMbIDLocationMap(self):
-        self.send_requestMbIDLocationMap()
-        return self.recv_requestMbIDLocationMap()
+    def requestEdgeMicrobatchMap(self):
+        self.send_requestEdgeMicrobatchMap()
+        return self.recv_requestEdgeMicrobatchMap()
 
-    def send_requestMbIDLocationMap(self):
-        self._oprot.writeMessageBegin('requestMbIDLocationMap', TMessageType.CALL, self._seqid)
-        args = requestMbIDLocationMap_args()
+    def send_requestEdgeMicrobatchMap(self):
+        self._oprot.writeMessageBegin('requestEdgeMicrobatchMap', TMessageType.CALL, self._seqid)
+        args = requestEdgeMicrobatchMap_args()
         args.write(self._oprot)
         self._oprot.writeMessageEnd()
         self._oprot.trans.flush()
 
-    def recv_requestMbIDLocationMap(self):
+    def recv_requestEdgeMicrobatchMap(self):
         iprot = self._iprot
         (fname, mtype, rseqid) = iprot.readMessageBegin()
         if mtype == TMessageType.EXCEPTION:
@@ -1692,12 +1714,78 @@ class Client(Iface):
             x.read(iprot)
             iprot.readMessageEnd()
             raise x
-        result = requestMbIDLocationMap_result()
+        result = requestEdgeMicrobatchMap_result()
         result.read(iprot)
         iprot.readMessageEnd()
         if result.success is not None:
             return result.success
-        raise TApplicationException(TApplicationException.MISSING_RESULT, "requestMbIDLocationMap failed: unknown result")
+        raise TApplicationException(TApplicationException.MISSING_RESULT, "requestEdgeMicrobatchMap failed: unknown result")
+
+    def requestCompFormatSize(self, mbId):
+        """
+        Parameters:
+         - mbId
+        """
+        self.send_requestCompFormatSize(mbId)
+        return self.recv_requestCompFormatSize()
+
+    def send_requestCompFormatSize(self, mbId):
+        self._oprot.writeMessageBegin('requestCompFormatSize', TMessageType.CALL, self._seqid)
+        args = requestCompFormatSize_args()
+        args.mbId = mbId
+        args.write(self._oprot)
+        self._oprot.writeMessageEnd()
+        self._oprot.trans.flush()
+
+    def recv_requestCompFormatSize(self):
+        iprot = self._iprot
+        (fname, mtype, rseqid) = iprot.readMessageBegin()
+        if mtype == TMessageType.EXCEPTION:
+            x = TApplicationException()
+            x.read(iprot)
+            iprot.readMessageEnd()
+            raise x
+        result = requestCompFormatSize_result()
+        result.read(iprot)
+        iprot.readMessageEnd()
+        if result.success is not None:
+            return result.success
+        raise TApplicationException(TApplicationException.MISSING_RESULT, "requestCompFormatSize failed: unknown result")
+
+    def findStreamUsingQuery(self, metaKeyValueMap, checkNeighbors, checkBuddies):
+        """
+        Parameters:
+         - metaKeyValueMap
+         - checkNeighbors
+         - checkBuddies
+        """
+        self.send_findStreamUsingQuery(metaKeyValueMap, checkNeighbors, checkBuddies)
+        return self.recv_findStreamUsingQuery()
+
+    def send_findStreamUsingQuery(self, metaKeyValueMap, checkNeighbors, checkBuddies):
+        self._oprot.writeMessageBegin('findStreamUsingQuery', TMessageType.CALL, self._seqid)
+        args = findStreamUsingQuery_args()
+        args.metaKeyValueMap = metaKeyValueMap
+        args.checkNeighbors = checkNeighbors
+        args.checkBuddies = checkBuddies
+        args.write(self._oprot)
+        self._oprot.writeMessageEnd()
+        self._oprot.trans.flush()
+
+    def recv_findStreamUsingQuery(self):
+        iprot = self._iprot
+        (fname, mtype, rseqid) = iprot.readMessageBegin()
+        if mtype == TMessageType.EXCEPTION:
+            x = TApplicationException()
+            x.read(iprot)
+            iprot.readMessageEnd()
+            raise x
+        result = findStreamUsingQuery_result()
+        result.read(iprot)
+        iprot.readMessageEnd()
+        if result.success is not None:
+            return result.success
+        raise TApplicationException(TApplicationException.MISSING_RESULT, "findStreamUsingQuery failed: unknown result")
 
     def findBlockUsingQuery(self, metaKeyValueMap, checkNeighbors, checkBuddies):
         """
@@ -1781,7 +1869,9 @@ class Processor(Iface, TProcessor):
         self._processMap["updateBlock"] = Processor.process_updateBlock
         self._processMap["listLocalPartitionMbId"] = Processor.process_listLocalPartitionMbId
         self._processMap["requestAllNeighbors"] = Processor.process_requestAllNeighbors
-        self._processMap["requestMbIDLocationMap"] = Processor.process_requestMbIDLocationMap
+        self._processMap["requestEdgeMicrobatchMap"] = Processor.process_requestEdgeMicrobatchMap
+        self._processMap["requestCompFormatSize"] = Processor.process_requestCompFormatSize
+        self._processMap["findStreamUsingQuery"] = Processor.process_findStreamUsingQuery
         self._processMap["findBlockUsingQuery"] = Processor.process_findBlockUsingQuery
 
     def process(self, iprot, oprot):
@@ -2425,7 +2515,7 @@ class Processor(Iface, TProcessor):
         iprot.readMessageEnd()
         result = read_result()
         try:
-            result.success = self._handler.read(args.microbatchId, args.fetchMetadata)
+            result.success = self._handler.read(args.microbatchId, args.fetchMetadata, args.compFormat, args.uncompSize)
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
@@ -2741,13 +2831,13 @@ class Processor(Iface, TProcessor):
         oprot.writeMessageEnd()
         oprot.trans.flush()
 
-    def process_requestMbIDLocationMap(self, seqid, iprot, oprot):
-        args = requestMbIDLocationMap_args()
+    def process_requestEdgeMicrobatchMap(self, seqid, iprot, oprot):
+        args = requestEdgeMicrobatchMap_args()
         args.read(iprot)
         iprot.readMessageEnd()
-        result = requestMbIDLocationMap_result()
+        result = requestEdgeMicrobatchMap_result()
         try:
-            result.success = self._handler.requestMbIDLocationMap()
+            result.success = self._handler.requestEdgeMicrobatchMap()
             msg_type = TMessageType.REPLY
         except TTransport.TTransportException:
             raise
@@ -2759,7 +2849,53 @@ class Processor(Iface, TProcessor):
             logging.exception('Unexpected exception in handler')
             msg_type = TMessageType.EXCEPTION
             result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
-        oprot.writeMessageBegin("requestMbIDLocationMap", msg_type, seqid)
+        oprot.writeMessageBegin("requestEdgeMicrobatchMap", msg_type, seqid)
+        result.write(oprot)
+        oprot.writeMessageEnd()
+        oprot.trans.flush()
+
+    def process_requestCompFormatSize(self, seqid, iprot, oprot):
+        args = requestCompFormatSize_args()
+        args.read(iprot)
+        iprot.readMessageEnd()
+        result = requestCompFormatSize_result()
+        try:
+            result.success = self._handler.requestCompFormatSize(args.mbId)
+            msg_type = TMessageType.REPLY
+        except TTransport.TTransportException:
+            raise
+        except TApplicationException as ex:
+            logging.exception('TApplication exception in handler')
+            msg_type = TMessageType.EXCEPTION
+            result = ex
+        except Exception:
+            logging.exception('Unexpected exception in handler')
+            msg_type = TMessageType.EXCEPTION
+            result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
+        oprot.writeMessageBegin("requestCompFormatSize", msg_type, seqid)
+        result.write(oprot)
+        oprot.writeMessageEnd()
+        oprot.trans.flush()
+
+    def process_findStreamUsingQuery(self, seqid, iprot, oprot):
+        args = findStreamUsingQuery_args()
+        args.read(iprot)
+        iprot.readMessageEnd()
+        result = findStreamUsingQuery_result()
+        try:
+            result.success = self._handler.findStreamUsingQuery(args.metaKeyValueMap, args.checkNeighbors, args.checkBuddies)
+            msg_type = TMessageType.REPLY
+        except TTransport.TTransportException:
+            raise
+        except TApplicationException as ex:
+            logging.exception('TApplication exception in handler')
+            msg_type = TMessageType.EXCEPTION
+            result = ex
+        except Exception:
+            logging.exception('Unexpected exception in handler')
+            msg_type = TMessageType.EXCEPTION
+            result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
+        oprot.writeMessageBegin("findStreamUsingQuery", msg_type, seqid)
         result.write(oprot)
         oprot.writeMessageEnd()
         oprot.trans.flush()
@@ -6349,12 +6485,16 @@ class read_args(object):
     Attributes:
      - microbatchId
      - fetchMetadata
+     - compFormat
+     - uncompSize
     """
 
 
-    def __init__(self, microbatchId=None, fetchMetadata=None,):
+    def __init__(self, microbatchId=None, fetchMetadata=None, compFormat=None, uncompSize=None,):
         self.microbatchId = microbatchId
         self.fetchMetadata = fetchMetadata
+        self.compFormat = compFormat
+        self.uncompSize = uncompSize
 
     def read(self, iprot):
         if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
@@ -6375,6 +6515,16 @@ class read_args(object):
                     self.fetchMetadata = iprot.readBool()
                 else:
                     iprot.skip(ftype)
+            elif fid == 3:
+                if ftype == TType.STRING:
+                    self.compFormat = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 4:
+                if ftype == TType.I64:
+                    self.uncompSize = iprot.readI64()
+                else:
+                    iprot.skip(ftype)
             else:
                 iprot.skip(ftype)
             iprot.readFieldEnd()
@@ -6392,6 +6542,14 @@ class read_args(object):
         if self.fetchMetadata is not None:
             oprot.writeFieldBegin('fetchMetadata', TType.BOOL, 2)
             oprot.writeBool(self.fetchMetadata)
+            oprot.writeFieldEnd()
+        if self.compFormat is not None:
+            oprot.writeFieldBegin('compFormat', TType.STRING, 3)
+            oprot.writeString(self.compFormat.encode('utf-8') if sys.version_info[0] == 2 else self.compFormat)
+            oprot.writeFieldEnd()
+        if self.uncompSize is not None:
+            oprot.writeFieldBegin('uncompSize', TType.I64, 4)
+            oprot.writeI64(self.uncompSize)
             oprot.writeFieldEnd()
         oprot.writeFieldStop()
         oprot.writeStructEnd()
@@ -6414,6 +6572,8 @@ read_args.thrift_spec = (
     None,  # 0
     (1, TType.I64, 'microbatchId', None, None, ),  # 1
     (2, TType.BOOL, 'fetchMetadata', None, None, ),  # 2
+    (3, TType.STRING, 'compFormat', 'UTF8', None, ),  # 3
+    (4, TType.I64, 'uncompSize', None, None, ),  # 4
 )
 
 
@@ -8272,7 +8432,7 @@ requestAllNeighbors_result.thrift_spec = (
 )
 
 
-class requestMbIDLocationMap_args(object):
+class requestEdgeMicrobatchMap_args(object):
 
 
     def read(self, iprot):
@@ -8293,7 +8453,7 @@ class requestMbIDLocationMap_args(object):
         if oprot._fast_encode is not None and self.thrift_spec is not None:
             oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
             return
-        oprot.writeStructBegin('requestMbIDLocationMap_args')
+        oprot.writeStructBegin('requestEdgeMicrobatchMap_args')
         oprot.writeFieldStop()
         oprot.writeStructEnd()
 
@@ -8310,12 +8470,12 @@ class requestMbIDLocationMap_args(object):
 
     def __ne__(self, other):
         return not (self == other)
-all_structs.append(requestMbIDLocationMap_args)
-requestMbIDLocationMap_args.thrift_spec = (
+all_structs.append(requestEdgeMicrobatchMap_args)
+requestEdgeMicrobatchMap_args.thrift_spec = (
 )
 
 
-class requestMbIDLocationMap_result(object):
+class requestEdgeMicrobatchMap_result(object):
     """
     Attributes:
      - success
@@ -8339,14 +8499,13 @@ class requestMbIDLocationMap_result(object):
                     self.success = {}
                     (_ktype180, _vtype181, _size179) = iprot.readMapBegin()
                     for _i183 in range(_size179):
-                        _key184 = iprot.readI64()
-                        _val185 = {}
-                        (_ktype187, _vtype188, _size186) = iprot.readMapBegin()
+                        _key184 = iprot.readI16()
+                        _val185 = set()
+                        (_etype189, _size186) = iprot.readSetBegin()
                         for _i190 in range(_size186):
-                            _key191 = iprot.readI16()
-                            _val192 = iprot.readByte()
-                            _val185[_key191] = _val192
-                        iprot.readMapEnd()
+                            _elem191 = iprot.readI64()
+                            _val185.add(_elem191)
+                        iprot.readSetEnd()
                         self.success[_key184] = _val185
                     iprot.readMapEnd()
                 else:
@@ -8360,17 +8519,16 @@ class requestMbIDLocationMap_result(object):
         if oprot._fast_encode is not None and self.thrift_spec is not None:
             oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
             return
-        oprot.writeStructBegin('requestMbIDLocationMap_result')
+        oprot.writeStructBegin('requestEdgeMicrobatchMap_result')
         if self.success is not None:
             oprot.writeFieldBegin('success', TType.MAP, 0)
-            oprot.writeMapBegin(TType.I64, TType.MAP, len(self.success))
-            for kiter193, viter194 in self.success.items():
-                oprot.writeI64(kiter193)
-                oprot.writeMapBegin(TType.I16, TType.BYTE, len(viter194))
-                for kiter195, viter196 in viter194.items():
-                    oprot.writeI16(kiter195)
-                    oprot.writeByte(viter196)
-                oprot.writeMapEnd()
+            oprot.writeMapBegin(TType.I16, TType.SET, len(self.success))
+            for kiter192, viter193 in self.success.items():
+                oprot.writeI16(kiter192)
+                oprot.writeSetBegin(TType.I64, len(viter193))
+                for iter194 in viter193:
+                    oprot.writeI64(iter194)
+                oprot.writeSetEnd()
             oprot.writeMapEnd()
             oprot.writeFieldEnd()
         oprot.writeFieldStop()
@@ -8389,9 +8547,303 @@ class requestMbIDLocationMap_result(object):
 
     def __ne__(self, other):
         return not (self == other)
-all_structs.append(requestMbIDLocationMap_result)
-requestMbIDLocationMap_result.thrift_spec = (
-    (0, TType.MAP, 'success', (TType.I64, None, TType.MAP, (TType.I16, None, TType.BYTE, None, False), False), None, ),  # 0
+all_structs.append(requestEdgeMicrobatchMap_result)
+requestEdgeMicrobatchMap_result.thrift_spec = (
+    (0, TType.MAP, 'success', (TType.I16, None, TType.SET, (TType.I64, None, False), False), None, ),  # 0
+)
+
+
+class requestCompFormatSize_args(object):
+    """
+    Attributes:
+     - mbId
+    """
+
+
+    def __init__(self, mbId=None,):
+        self.mbId = mbId
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, [self.__class__, self.thrift_spec])
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 1:
+                if ftype == TType.I64:
+                    self.mbId = iprot.readI64()
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
+            return
+        oprot.writeStructBegin('requestCompFormatSize_args')
+        if self.mbId is not None:
+            oprot.writeFieldBegin('mbId', TType.I64, 1)
+            oprot.writeI64(self.mbId)
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+all_structs.append(requestCompFormatSize_args)
+requestCompFormatSize_args.thrift_spec = (
+    None,  # 0
+    (1, TType.I64, 'mbId', None, None, ),  # 1
+)
+
+
+class requestCompFormatSize_result(object):
+    """
+    Attributes:
+     - success
+    """
+
+
+    def __init__(self, success=None,):
+        self.success = success
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, [self.__class__, self.thrift_spec])
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 0:
+                if ftype == TType.MAP:
+                    self.success = {}
+                    (_ktype196, _vtype197, _size195) = iprot.readMapBegin()
+                    for _i199 in range(_size195):
+                        _key200 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                        _val201 = iprot.readI64()
+                        self.success[_key200] = _val201
+                    iprot.readMapEnd()
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
+            return
+        oprot.writeStructBegin('requestCompFormatSize_result')
+        if self.success is not None:
+            oprot.writeFieldBegin('success', TType.MAP, 0)
+            oprot.writeMapBegin(TType.STRING, TType.I64, len(self.success))
+            for kiter202, viter203 in self.success.items():
+                oprot.writeString(kiter202.encode('utf-8') if sys.version_info[0] == 2 else kiter202)
+                oprot.writeI64(viter203)
+            oprot.writeMapEnd()
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+all_structs.append(requestCompFormatSize_result)
+requestCompFormatSize_result.thrift_spec = (
+    (0, TType.MAP, 'success', (TType.STRING, 'UTF8', TType.I64, None, False), None, ),  # 0
+)
+
+
+class findStreamUsingQuery_args(object):
+    """
+    Attributes:
+     - metaKeyValueMap
+     - checkNeighbors
+     - checkBuddies
+    """
+
+
+    def __init__(self, metaKeyValueMap=None, checkNeighbors=None, checkBuddies=None,):
+        self.metaKeyValueMap = metaKeyValueMap
+        self.checkNeighbors = checkNeighbors
+        self.checkBuddies = checkBuddies
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, [self.__class__, self.thrift_spec])
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 1:
+                if ftype == TType.MAP:
+                    self.metaKeyValueMap = {}
+                    (_ktype205, _vtype206, _size204) = iprot.readMapBegin()
+                    for _i208 in range(_size204):
+                        _key209 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                        _val210 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                        self.metaKeyValueMap[_key209] = _val210
+                    iprot.readMapEnd()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 2:
+                if ftype == TType.BOOL:
+                    self.checkNeighbors = iprot.readBool()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 3:
+                if ftype == TType.BOOL:
+                    self.checkBuddies = iprot.readBool()
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
+            return
+        oprot.writeStructBegin('findStreamUsingQuery_args')
+        if self.metaKeyValueMap is not None:
+            oprot.writeFieldBegin('metaKeyValueMap', TType.MAP, 1)
+            oprot.writeMapBegin(TType.STRING, TType.STRING, len(self.metaKeyValueMap))
+            for kiter211, viter212 in self.metaKeyValueMap.items():
+                oprot.writeString(kiter211.encode('utf-8') if sys.version_info[0] == 2 else kiter211)
+                oprot.writeString(viter212.encode('utf-8') if sys.version_info[0] == 2 else viter212)
+            oprot.writeMapEnd()
+            oprot.writeFieldEnd()
+        if self.checkNeighbors is not None:
+            oprot.writeFieldBegin('checkNeighbors', TType.BOOL, 2)
+            oprot.writeBool(self.checkNeighbors)
+            oprot.writeFieldEnd()
+        if self.checkBuddies is not None:
+            oprot.writeFieldBegin('checkBuddies', TType.BOOL, 3)
+            oprot.writeBool(self.checkBuddies)
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+all_structs.append(findStreamUsingQuery_args)
+findStreamUsingQuery_args.thrift_spec = (
+    None,  # 0
+    (1, TType.MAP, 'metaKeyValueMap', (TType.STRING, 'UTF8', TType.STRING, 'UTF8', False), None, ),  # 1
+    (2, TType.BOOL, 'checkNeighbors', None, None, ),  # 2
+    (3, TType.BOOL, 'checkBuddies', None, None, ),  # 3
+)
+
+
+class findStreamUsingQuery_result(object):
+    """
+    Attributes:
+     - success
+    """
+
+
+    def __init__(self, success=None,):
+        self.success = success
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, [self.__class__, self.thrift_spec])
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 0:
+                if ftype == TType.SET:
+                    self.success = set()
+                    (_etype216, _size213) = iprot.readSetBegin()
+                    for _i217 in range(_size213):
+                        _elem218 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                        self.success.add(_elem218)
+                    iprot.readSetEnd()
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, [self.__class__, self.thrift_spec]))
+            return
+        oprot.writeStructBegin('findStreamUsingQuery_result')
+        if self.success is not None:
+            oprot.writeFieldBegin('success', TType.SET, 0)
+            oprot.writeSetBegin(TType.STRING, len(self.success))
+            for iter219 in self.success:
+                oprot.writeString(iter219.encode('utf-8') if sys.version_info[0] == 2 else iter219)
+            oprot.writeSetEnd()
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+all_structs.append(findStreamUsingQuery_result)
+findStreamUsingQuery_result.thrift_spec = (
+    (0, TType.SET, 'success', (TType.STRING, 'UTF8', False), None, ),  # 0
 )
 
 
@@ -8421,11 +8873,11 @@ class findBlockUsingQuery_args(object):
             if fid == 1:
                 if ftype == TType.MAP:
                     self.metaKeyValueMap = {}
-                    (_ktype198, _vtype199, _size197) = iprot.readMapBegin()
-                    for _i201 in range(_size197):
-                        _key202 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
-                        _val203 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
-                        self.metaKeyValueMap[_key202] = _val203
+                    (_ktype221, _vtype222, _size220) = iprot.readMapBegin()
+                    for _i224 in range(_size220):
+                        _key225 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                        _val226 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                        self.metaKeyValueMap[_key225] = _val226
                     iprot.readMapEnd()
                 else:
                     iprot.skip(ftype)
@@ -8452,9 +8904,9 @@ class findBlockUsingQuery_args(object):
         if self.metaKeyValueMap is not None:
             oprot.writeFieldBegin('metaKeyValueMap', TType.MAP, 1)
             oprot.writeMapBegin(TType.STRING, TType.STRING, len(self.metaKeyValueMap))
-            for kiter204, viter205 in self.metaKeyValueMap.items():
-                oprot.writeString(kiter204.encode('utf-8') if sys.version_info[0] == 2 else kiter204)
-                oprot.writeString(viter205.encode('utf-8') if sys.version_info[0] == 2 else viter205)
+            for kiter227, viter228 in self.metaKeyValueMap.items():
+                oprot.writeString(kiter227.encode('utf-8') if sys.version_info[0] == 2 else kiter227)
+                oprot.writeString(viter228.encode('utf-8') if sys.version_info[0] == 2 else viter228)
             oprot.writeMapEnd()
             oprot.writeFieldEnd()
         if self.checkNeighbors is not None:
@@ -8512,11 +8964,11 @@ class findBlockUsingQuery_result(object):
             if fid == 0:
                 if ftype == TType.MAP:
                     self.success = {}
-                    (_ktype207, _vtype208, _size206) = iprot.readMapBegin()
-                    for _i210 in range(_size206):
-                        _key211 = iprot.readI64()
-                        _val212 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
-                        self.success[_key211] = _val212
+                    (_ktype230, _vtype231, _size229) = iprot.readMapBegin()
+                    for _i233 in range(_size229):
+                        _key234 = iprot.readI64()
+                        _val235 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                        self.success[_key234] = _val235
                     iprot.readMapEnd()
                 else:
                     iprot.skip(ftype)
@@ -8533,9 +8985,9 @@ class findBlockUsingQuery_result(object):
         if self.success is not None:
             oprot.writeFieldBegin('success', TType.MAP, 0)
             oprot.writeMapBegin(TType.I64, TType.STRING, len(self.success))
-            for kiter213, viter214 in self.success.items():
-                oprot.writeI64(kiter213)
-                oprot.writeString(viter214.encode('utf-8') if sys.version_info[0] == 2 else viter214)
+            for kiter236, viter237 in self.success.items():
+                oprot.writeI64(kiter236)
+                oprot.writeString(viter237.encode('utf-8') if sys.version_info[0] == 2 else viter237)
             oprot.writeMapEnd()
             oprot.writeFieldEnd()
         oprot.writeFieldStop()

@@ -996,7 +996,7 @@ class BuddyPayload(object):
                     self.mbIdToStreamIdMap = {}
                     (_ktype17, _vtype18, _size16) = iprot.readMapBegin()
                     for _i20 in range(_size16):
-                        _key21 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                        _key21 = iprot.readI64()
                         _val22 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
                         self.mbIdToStreamIdMap[_key21] = _val22
                     iprot.readMapEnd()
@@ -1018,9 +1018,9 @@ class BuddyPayload(object):
             oprot.writeFieldEnd()
         if self.mbIdToStreamIdMap is not None:
             oprot.writeFieldBegin('mbIdToStreamIdMap', TType.MAP, 2)
-            oprot.writeMapBegin(TType.STRING, TType.STRING, len(self.mbIdToStreamIdMap))
+            oprot.writeMapBegin(TType.I64, TType.STRING, len(self.mbIdToStreamIdMap))
             for kiter23, viter24 in self.mbIdToStreamIdMap.items():
-                oprot.writeString(kiter23.encode('utf-8') if sys.version_info[0] == 2 else kiter23)
+                oprot.writeI64(kiter23)
                 oprot.writeString(viter24.encode('utf-8') if sys.version_info[0] == 2 else viter24)
             oprot.writeMapEnd()
             oprot.writeFieldEnd()
@@ -1075,7 +1075,7 @@ class NeighborPayload(object):
                     self.mbIdToStreamIdMap = {}
                     (_ktype26, _vtype27, _size25) = iprot.readMapBegin()
                     for _i29 in range(_size25):
-                        _key30 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                        _key30 = iprot.readI64()
                         _val31 = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
                         self.mbIdToStreamIdMap[_key30] = _val31
                     iprot.readMapEnd()
@@ -1097,9 +1097,9 @@ class NeighborPayload(object):
             oprot.writeFieldEnd()
         if self.mbIdToStreamIdMap is not None:
             oprot.writeFieldBegin('mbIdToStreamIdMap', TType.MAP, 2)
-            oprot.writeMapBegin(TType.STRING, TType.STRING, len(self.mbIdToStreamIdMap))
+            oprot.writeMapBegin(TType.I64, TType.STRING, len(self.mbIdToStreamIdMap))
             for kiter32, viter33 in self.mbIdToStreamIdMap.items():
-                oprot.writeString(kiter32.encode('utf-8') if sys.version_info[0] == 2 else kiter32)
+                oprot.writeI64(kiter32)
                 oprot.writeString(viter33.encode('utf-8') if sys.version_info[0] == 2 else viter33)
             oprot.writeMapEnd()
             oprot.writeFieldEnd()
@@ -2436,10 +2436,12 @@ class Metadata(object):
      - timestamp
      - checksum
      - properties
+     - compFormat
+     - uncompSize
     """
 
 
-    def __init__(self, clientId=None, sessionSecret=None, streamId=None, mbId=None, timestamp=None, checksum=None, properties=None,):
+    def __init__(self, clientId=None, sessionSecret=None, streamId=None, mbId=None, timestamp=None, checksum=None, properties=None, compFormat=None, uncompSize=None,):
         self.clientId = clientId
         self.sessionSecret = sessionSecret
         self.streamId = streamId
@@ -2447,6 +2449,8 @@ class Metadata(object):
         self.timestamp = timestamp
         self.checksum = checksum
         self.properties = properties
+        self.compFormat = compFormat
+        self.uncompSize = uncompSize
 
     def read(self, iprot):
         if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
@@ -2492,6 +2496,16 @@ class Metadata(object):
                     self.properties = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
                 else:
                     iprot.skip(ftype)
+            elif fid == 8:
+                if ftype == TType.STRING:
+                    self.compFormat = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 9:
+                if ftype == TType.I64:
+                    self.uncompSize = iprot.readI64()
+                else:
+                    iprot.skip(ftype)
             else:
                 iprot.skip(ftype)
             iprot.readFieldEnd()
@@ -2529,6 +2543,14 @@ class Metadata(object):
         if self.properties is not None:
             oprot.writeFieldBegin('properties', TType.STRING, 7)
             oprot.writeString(self.properties.encode('utf-8') if sys.version_info[0] == 2 else self.properties)
+            oprot.writeFieldEnd()
+        if self.compFormat is not None:
+            oprot.writeFieldBegin('compFormat', TType.STRING, 8)
+            oprot.writeString(self.compFormat.encode('utf-8') if sys.version_info[0] == 2 else self.compFormat)
+            oprot.writeFieldEnd()
+        if self.uncompSize is not None:
+            oprot.writeFieldBegin('uncompSize', TType.I64, 9)
+            oprot.writeI64(self.uncompSize)
             oprot.writeFieldEnd()
         oprot.writeFieldStop()
         oprot.writeStructEnd()
@@ -3450,13 +3472,13 @@ all_structs.append(BuddyPayload)
 BuddyPayload.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'payload', 'BINARY', None, ),  # 1
-    (2, TType.MAP, 'mbIdToStreamIdMap', (TType.STRING, 'UTF8', TType.STRING, 'UTF8', False), None, ),  # 2
+    (2, TType.MAP, 'mbIdToStreamIdMap', (TType.I64, None, TType.STRING, 'UTF8', False), None, ),  # 2
 )
 all_structs.append(NeighborPayload)
 NeighborPayload.thrift_spec = (
     None,  # 0
     (1, TType.STRING, 'payload', 'BINARY', None, ),  # 1
-    (2, TType.MAP, 'mbIdToStreamIdMap', (TType.STRING, 'UTF8', TType.STRING, 'UTF8', False), None, ),  # 2
+    (2, TType.MAP, 'mbIdToStreamIdMap', (TType.I64, None, TType.STRING, 'UTF8', False), None, ),  # 2
 )
 all_structs.append(EdgePayload)
 EdgePayload.thrift_spec = (
@@ -3575,6 +3597,8 @@ Metadata.thrift_spec = (
     (5, TType.I64, 'timestamp', None, None, ),  # 5
     (6, TType.STRING, 'checksum', 'UTF8', None, ),  # 6
     (7, TType.STRING, 'properties', 'UTF8', None, ),  # 7
+    (8, TType.STRING, 'compFormat', 'UTF8', None, ),  # 8
+    (9, TType.I64, 'uncompSize', None, None, ),  # 9
 )
 all_structs.append(ReadResponse)
 ReadResponse.thrift_spec = (
