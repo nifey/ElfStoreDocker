@@ -53,6 +53,9 @@ STREAM_RELIABILITY = float()
 DEFAULT_BLOCK_SIZE = 10000000
 SET_LEASE = bool()
 NUM_WRITES = int()
+EXPECTED_LEASE = int()
+COMP_FORMAT = str()
+
 
 ## Used when the --v (i.e verbose) is set to false
 ## The output of the python file of the correspoding command is written here
@@ -368,6 +371,8 @@ class EdgeClient:
         additional_prop = {}
         additional_prop["Name"] = "Sheshadri"
         metaData.properties = json.dumps(additional_prop)
+        metaData.compFormat = COMP_FORMAT
+        metaData.uncompSize = len(data)
 
 
         #print EDGE_ID,EDGE_IP,EDGE_PORT,EDGE_RELIABILITY,encodedSpace
@@ -582,7 +587,7 @@ class EdgeClient:
         myLogs.write(timestamp_record)
         myLogs.close()
 
-def putlarge(path,streamId,start,metadataLocation,fogIp,fogPort,edgeId,clientId,numWrites,setLease,verbose = False):
+def putlarge(path,streamId,start,metadataLocation,fogIp,fogPort,edgeId,clientId,numWrites,setLease,leaseDuration,compFormat,verbose = False):
     myEdge = EdgeClient()
 
     global PATH
@@ -604,6 +609,10 @@ def putlarge(path,streamId,start,metadataLocation,fogIp,fogPort,edgeId,clientId,
     STREAM_RELIABILITY = myEdge.getStreamMetadataReliability(STREAM_ID)
     global NUM_WRITES
     NUM_WRITES = int(numWrites)
+    global EXPECTED_LEASE
+    EXPECTED_LEASE = int(leaseDuration)
+    global COMP_FORMAT
+    COMP_FORMAT = compFormat
 
     print("here")
     print("The stream reliability needed is : ", str(STREAM_RELIABILITY))

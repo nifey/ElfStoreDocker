@@ -80,6 +80,23 @@ class elfsCLI(Cmd):
         else:
             module_EdgeClientCLI_put.put(tokens.path,tokens.streamId,tokens.start,tokens.metadata, tokens.fogIp,tokens.fogPort,tokens.edgeId,tokens.clientId,splitChoice,setLease,tokens.duration,tokens.comp)
 
+    def do_putlarge(self,args):
+
+        ## here args includes everyting after the invokation command
+        ## split the args starting using shlex into tokens
+        line = shlex.split(args)
+        ## parse the tokens using the previously defined #global parser
+        tokens = putlarge_parser.parse_args(line)
+
+        setLease = str(0)
+
+        if tokens.setLease == True:
+            setLease = str(1)
+
+        if tokens.v == True:
+            module_EdgeClientCLI_putlarge.putlarge(tokens.path,tokens.streamId,tokens.start,tokens.metadata, tokens.fogIp,tokens.fogPort,tokens.edgeId,tokens.clientId,tokens.numwrites,setLease,tokens.duration,tokens.comp,True)
+        else:
+            module_EdgeClientCLI_putlarge.putlarge(tokens.path,tokens.streamId,tokens.start,tokens.metadata, tokens.fogIp,tokens.fogPort,tokens.edgeId,tokens.clientId,tokens.numwrites,setLease,tokens.duration,tokens.comp)
 
     def do_get(self,args):
         ## here args includes everyting after the invokation command
@@ -290,6 +307,34 @@ if __name__ == '__main__':
     put_parser.add_argument("--duration",default=str(0))
     put_parser.add_argument("--comp",default=COMP_FORMAT)
     put_parser.add_argument("--v","--verbose", action ="store_true")
+
+    ## Parser for putlarge command
+    ## Arguments :
+    ## 1. --path
+    ## 2. --streamId
+    ## 3. --start
+    ## 4. --numwrites
+    ## 5. --metadata (default as None)
+    ## 6. --fogIp (default, based on config file)
+    ## 7. --fogPort (default, based on config file)
+    ## 8. --edgeId (default, based on config file)
+    ## 9. --clientId (default, hashed based on the edge id)
+    ## 10. --setLease (flag)
+    putlarge_parser = subparsers.add_parser("putlarge")
+    putlarge_parser.add_argument("--path")
+    putlarge_parser.add_argument("--streamId")
+    putlarge_parser.add_argument("--start")
+    putlarge_parser.add_argument("--numwrites")
+    putlarge_parser.add_argument("--metadata", default = None)
+    putlarge_parser.add_argument("--fogIp", default = FOG_IP)
+    putlarge_parser.add_argument("--fogPort", default = str(FOG_PORT))
+    putlarge_parser.add_argument("--edgeId", default = str(EDGE_ID))
+    putlarge_parser.add_argument("--clientId", default = CLIENT_ID)
+    putlarge_parser.add_argument("--singleBlock", action ="store_true")
+    putlarge_parser.add_argument("--setLease", action ="store_true")
+    put_parser.add_argument("--duration",default=str(0))
+    put_parser.add_argument("--comp",default=COMP_FORMAT)
+    putlarge_parser.add_argument("--v","--verbose", action ="store_true")
 
     ## Parser for get command
     ## Arguments :
