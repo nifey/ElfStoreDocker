@@ -22,11 +22,11 @@ import contextlib
 
 import module_EdgeClientCLI_ls
 
-if os.path.isdir("/edgefs/logs") == False:
-    os.mkdir("/edgefs/logs")
+if os.path.isdir("./DataAndLogs") == False:
+    os.mkdir("./DataAndLogs")
 
 ## the file logs.txt will be created later
-BASE_LOG = "/edgefs/logs/"
+BASE_LOG = "./DataAndLogs/"
 FOG_SERVICE = 0
 FOG_IP = str()
 FOG_PORT = int()
@@ -55,6 +55,12 @@ class EdgeClient:
         client,transport = self.openSocketConnection(FOG_IP,FOG_PORT,FOG_SERVICE)
         mbIdStreamIdMap = client.findBlockUsingQuery(metaKeyValueMap,True,True);
         return mbIdStreamIdMap
+
+    # get list of mbids and corresponding streamids for blocks that match given metadata properties(specified in a json file).
+    def getFindStreamUsingQuery(self,metaKeyValueMap):
+        client,transport = self.openSocketConnection(FOG_IP,FOG_PORT,FOG_SERVICE)
+        streamIdSet = client.findStreamUsingQuery(metaKeyValueMap,True,True);
+        return streamIdSet
 
     # Return the fog client instance to talk to the fog
     def openSocketConnection(self,ip,port, choice):
@@ -91,7 +97,7 @@ class EdgeClient:
 
 
 
-def find(mbid,metadataLocation,fogIp,fogPort,verbose = False):
+def find(mbid,blockMetaLocation,streamMetaLocation,fogIp,fogPort,verbose = False):
     global FOG_IP
     FOG_IP = fogIp
     global FOG_PORT
@@ -103,15 +109,21 @@ def find(mbid,metadataLocation,fogIp,fogPort,verbose = False):
     ## 1. Call lsMbIdSystem from module_EdgeClientCLI_ls with groupBy = 2 (i.e group by mbid)
     choice = 20
     groupBy=2
-    if mbid != None and metadataLocation == None:
+    if mbid != None and blockMetaLocation == None and streamMetaLocation == None:
         try:
             mbids = module_EdgeClientCLI_ls.ls(fogIp,fogPort,choice,groupBy,verbose)
             #str(list(set(mbids[mbid])))
             print("Edges: "+str(list(set(mbids[int(mbid)]))))
         except KeyError:
             print("Microbatch not in in the system.")
-    elif mbid == None and metadataLocation!=None:
+    elif blockMetaLocation != None and mbid == None and streamMetaLocation == None:
         myEdge = EdgeClient()
-        metaKeyValueMap = json.load(open(metadataLocation,'r'))
+        metaKeyValueMap = json.load(open(blockMetaLocation,'r'))
         response = myEdge.getFindBlockUsingQuery(metaKeyValueMap)
+        print(response)
+
+    elif streamMetaLocation != None and mbid == None and blockMetaLocation == None:
+        myEdge = EdgeClient()
+        metaKeyValueMap = json.load(open(streamMetaLocation,'r'))
+        response = myEdge.getFindStreamUsingQuery(metaKeyValueMap)
         print(response)

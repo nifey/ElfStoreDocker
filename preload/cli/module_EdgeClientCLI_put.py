@@ -21,11 +21,11 @@ from pprint import pprint
 import hashlib
 import contextlib
 
-if os.path.isdir("/edgefs/logs") == False:
-    os.mkdir("/edgefs/logs")
+if os.path.isdir("./DataAndLogs") == False:
+    os.mkdir("./DataAndLogs")
 
 ## the file logs.txt will be created later
-BASE_LOG = "/edgefs/logs/"
+BASE_LOG = "./DataAndLogs/"
 FOG_SERVICE = 0
 #this is assigned when the open() api succeeds
 SESSION_SECRET = 'test'
@@ -59,6 +59,9 @@ SET_LEASE = bool()
 #The default value is set to 0 here; if it is found to be <=0 at the server side
 #then it is set to 90 seconds in FogServiceHandler
 EXPECTED_LEASE = int()
+# format for compression of blocks before storing them on edges
+COMP_FORMAT = str()
+UNCOMP_SIZE = int()
 
 ## Used when the --v (i.e verbose) is set to false
 ## The output of the python file of the correspoding command is written here
@@ -274,9 +277,9 @@ class EdgeClient:
         ## psutil (process and system utilities) is a cross-platform library for
         ## retrieving information on storage running processes.
         if( hasattr(psutil,'disk_usage')):
-            total = psutil.disk_usage('/edgedatatemp').total
-            free = psutil.disk_usage('/edgedatatemp').free
-            used = psutil.disk_usage('/edgedatatemp').used
+            total = psutil.disk_usage('/').total
+            free = psutil.disk_usage('/').free
+            used = psutil.disk_usage('/').used
             print("Disk ",free," : ",total," : ",used)
 
             util = used/float(total)*100
@@ -374,6 +377,8 @@ class EdgeClient:
         additional_prop = {}
         additional_prop["Name"] = "Sheshadri"
         metaData.properties = json.dumps(additional_prop)
+        metaData.compFormat = COMP_FORMAT
+        metaData.uncompSize = len(data)
 
 
         #print EDGE_ID,EDGE_IP,EDGE_PORT,EDGE_RELIABILITY,encodedSpace
@@ -588,7 +593,7 @@ class EdgeClient:
         myLogs.write(timestamp_record)
         myLogs.close()
 
-def put(path,streamId,start,metadataLocation,fogIp,fogPort,edgeId,clientId,splitChoice,setLease,leaseDuration,verbose = False):
+def put(path,streamId,start,metadataLocation,fogIp,fogPort,edgeId,clientId,splitChoice,setLease,leaseDuration,compFormat,verbose = False):
     myEdge = EdgeClient()
 
     global PATH
@@ -611,6 +616,8 @@ def put(path,streamId,start,metadataLocation,fogIp,fogPort,edgeId,clientId,split
     STREAM_RELIABILITY = myEdge.getStreamMetadataReliability(STREAM_ID)
     global EXPECTED_LEASE
     EXPECTED_LEASE = int(leaseDuration)
+    global COMP_FORMAT
+    COMP_FORMAT = compFormat
 
     ## Initialize the metaKeyValueMap dict. This dicionary/map comtains the optional metadata
     ## properties that can be specified by the end user during runtime.
