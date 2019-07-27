@@ -21,11 +21,11 @@ from pprint import pprint
 import hashlib
 import contextlib
 
-if os.path.isdir("./DataAndLogs") == False:
-    os.mkdir("./DataAndLogs")
+if os.path.isdir("/edgefs/logs") == False:
+    os.mkdir("/edgefs/logs")
 
 ## the file logs.txt will be created later
-BASE_LOG = "./DataAndLogs/"
+BASE_LOG = "/edgefs/logs/"
 FOG_SERVICE = 0
 #this is assigned when the open() api succeeds
 SESSION_SECRET = 'test'
@@ -277,9 +277,9 @@ class EdgeClient:
         ## psutil (process and system utilities) is a cross-platform library for
         ## retrieving information on storage running processes.
         if( hasattr(psutil,'disk_usage')):
-            total = psutil.disk_usage('/').total
-            free = psutil.disk_usage('/').free
-            used = psutil.disk_usage('/').used
+            total = psutil.disk_usage('/edgefs/data').total
+            free = psutil.disk_usage('/edgefs/data').free
+            used = psutil.disk_usage('/edgefs/data').used
             print("Disk ",free," : ",total," : ",used)
 
             util = used/float(total)*100
