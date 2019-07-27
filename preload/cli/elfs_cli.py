@@ -332,8 +332,8 @@ if __name__ == '__main__':
     putlarge_parser.add_argument("--clientId", default = CLIENT_ID)
     putlarge_parser.add_argument("--singleBlock", action ="store_true")
     putlarge_parser.add_argument("--setLease", action ="store_true")
-    put_parser.add_argument("--duration",default=str(0))
-    put_parser.add_argument("--comp",default=COMP_FORMAT)
+    putlarge_parser.add_argument("--duration",default=str(0))
+    putlarge_parser.add_argument("--comp",default=COMP_FORMAT)
     putlarge_parser.add_argument("--v","--verbose", action ="store_true")
 
     ## Parser for get command
