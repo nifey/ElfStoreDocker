@@ -209,7 +209,7 @@ class EdgeClient:
                      print("File not found : cannot read file")
 
                  else:
-                     self.formulateJsonResponse(microbatchId,response)
+                     #self.formulateJsonResponse(microbatchId,response)
                      print("Local Read ",len(response.data)," number of bytes")
                      print("metadata also read ",response.metadata)
                      return 1 #successful read
@@ -228,7 +228,7 @@ class EdgeClient:
                  myLogs.write(timestamp_record)
                  myLogs.close()
                  if(response.status == 1):
-                     self.formulateJsonResponse(microbatchId,response)
+                     #self.formulateJsonResponse(microbatchId,response)
                      print("Fog Amount of bytes read ",len(response.data))
                      return 1 #successful read
                  else:
@@ -277,7 +277,7 @@ def get(start,end,edgeId,edgeIp,edgePort,edgeReliability,fogIp,fogPort, verbose 
             else :  print("Read response for microbatch "+str(i)+" is : \nsuccess \nNo. of bytes read = "+str(len(JSON_RESPONSE[i]['data']))+"\n")
             i = i + 1
 
-    jsonResponse = JSON_RESPONSE
+    #jsonResponse = JSON_RESPONSE
 
-    JSON_RESPONSE = dict()
-    return json.dumps(jsonResponse)
+    #JSON_RESPONSE = dict()
+    #return json.dumps(jsonResponse)
