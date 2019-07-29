@@ -18,7 +18,7 @@ services :
         ipv4_address: 174.10.10.7
     expose:
       - "7007"
-    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 8 174.10.10.7 7007 86 174.10.0.3 9091  /edgedatatemp /edgefs/logs
+    command: java -Xms40m -Xmx200m  -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 8 174.10.10.7 7007 86 174.10.0.3 9091  /edgedatatemp /edgefs/logs
 
   edge9:
     image: elfstorenojson
@@ -32,7 +32,7 @@ services :
         ipv4_address: 174.10.10.8
     expose:
       - "7008"
-    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 9 174.10.10.8 7008 90 174.10.0.4 9092  /edgedatatemp /edgefs/logs
+    command: java -Xms40m -Xmx200m  -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 9 174.10.10.8 7008 90 174.10.0.4 9092  /edgedatatemp /edgefs/logs
 
   edge10:
     image: elfstorenojson
@@ -46,7 +46,7 @@ services :
         ipv4_address: 174.10.10.9
     expose:
       - "7009"
-    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 10 174.10.10.9 7009 87 174.10.0.4 9092  /edgedatatemp /edgefs/logs
+    command: java -Xms40m -Xmx200m  -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 10 174.10.10.9 7009 87 174.10.0.4 9092  /edgedatatemp /edgefs/logs
 
   edge11:
     image: elfstorenojson
@@ -60,7 +60,7 @@ services :
         ipv4_address: 174.10.10.10
     expose:
       - "7010"
-    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 11 174.10.10.10 7010 94 174.10.0.4 9092  /edgedatatemp /edgefs/logs
+    command: java -Xms40m -Xmx200m  -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 11 174.10.10.10 7010 94 174.10.0.4 9092  /edgedatatemp /edgefs/logs
 
   edge12:
     image: elfstorenojson
@@ -74,7 +74,7 @@ services :
         ipv4_address: 174.10.10.11
     expose:
       - "7011"
-    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 12 174.10.10.11 7011 91 174.10.0.4 9092  /edgedatatemp /edgefs/logs
+    command: java -Xms40m -Xmx200m  -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 12 174.10.10.11 7011 91 174.10.0.4 9092  /edgedatatemp /edgefs/logs
 
   edge13:
     image: elfstorenojson
@@ -88,7 +88,7 @@ services :
         ipv4_address: 174.10.10.12
     expose:
       - "7012"
-    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 13 174.10.10.12 7012 90 174.10.0.5 9093  /edgedatatemp /edgefs/logs
+    command: java -Xms40m -Xmx200m  -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 13 174.10.10.12 7012 90 174.10.0.5 9093  /edgedatatemp /edgefs/logs
 
   edge14:
     image: elfstorenojson
@@ -102,7 +102,7 @@ services :
         ipv4_address: 174.10.10.13
     expose:
       - "7013"
-    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 14 174.10.10.13 7013 88 174.10.0.5 9093  /edgedatatemp /edgefs/logs
+    command: java -Xms40m -Xmx200m  -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 14 174.10.10.13 7013 88 174.10.0.5 9093  /edgedatatemp /edgefs/logs
 
   edge15:
     image: elfstorenojson
@@ -116,7 +116,7 @@ services :
         ipv4_address: 174.10.10.14
     expose:
       - "7014"
-    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 15 174.10.10.14 7014 90 174.10.0.5 9093  /edgedatatemp /edgefs/logs
+    command: java -Xms40m -Xmx200m  -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 15 174.10.10.14 7014 90 174.10.0.5 9093  /edgedatatemp /edgefs/logs
 
   edge16:
     image: elfstorenojson
@@ -130,4 +130,4 @@ services :
         ipv4_address: 174.10.10.15
     expose:
       - "7015"
-    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 16 174.10.10.15 7015 91  174.10.0.5 9093  /edgedatatemp /edgefs/logs
+    command: java -Xms40m -Xmx200m  -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 16 174.10.10.15 7015 91  174.10.0.5 9093  /edgedatatemp /edgefs/logs
