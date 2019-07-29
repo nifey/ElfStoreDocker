@@ -14,10 +14,10 @@ services :
       - ./Logs/serverLogs/:/log.dir_IS_UNDEFINED/
     networks:
       default:
-        ipv4_address: 174.10.0.4
+        ipv4_address: 174.10.20.4
     expose:
       - "9092"
-    command: java -Xms80m -Xmx800m -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.controlplane.FogServer 174.10.0.4 9092 2 3 0.25 0
+    command: java -Xms80m -Xmx800m -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.controlplane.FogServer 174.10.20.4 9092 2 3 0.25 0
 
   fog4:
     image: elfstorenojson
@@ -27,7 +27,7 @@ services :
       - ./Logs/serverLogs/:/log.dir_IS_UNDEFINED/
     networks:
       default:
-        ipv4_address: 174.10.0.5
+        ipv4_address: 174.10.20.5
     expose:
       - "9093"
-    command: java -Xms80m -Xmx800m -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.controlplane.FogServer 174.10.0.5 9093 2 4 0.25 0
+    command: java -Xms80m -Xmx800m -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.controlplane.FogServer 174.10.20.5 9093 2 4 0.25 0
