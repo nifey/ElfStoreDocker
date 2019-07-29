@@ -3,7 +3,7 @@
   "edgeIp" : "174.10.10.2",
   "edgePort" : 7002,
   "reliability" : 85,
-  "fogIp" : "174.10.0.2",
+  "fogIp" : "174.10.20.2",
   "fogPort" : 9090,
   "logsFolder" : "D:/Lab/DataAndLogs/edge3_logs",
   "baseLog" : "D:/Lab/LogsFolder/base_logs",
