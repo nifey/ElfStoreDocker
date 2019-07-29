@@ -15,6 +15,8 @@ import module_EdgeClientCLI_get
 import module_EdgeClientCLI_put
 import module_EdgeClientCLI_ls
 import module_EdgeClientCLI_find
+import module_EdgeClientCLI_putlarge
+import module_EdgeClientCLI_getrep
 
 ## Global parameters
 EDGE_ID = int()
@@ -109,6 +111,19 @@ class elfsCLI(Cmd):
             #del jsonResponse
         else:
             module_EdgeClientCLI_get.get(tokens.start, tokens.end, tokens.edgeId, tokens.edgeIp, tokens.edgePort, tokens.edgeReli, tokens.fogIp, tokens.fogPort)
+            #del jsonResponse
+
+    def do_getrep(self,args):
+        ## here args includes everyting after the invokation command
+        ## split the args starting using shlex into tokens
+        line = shlex.split(args)
+        ## parse the tokens using the previously defined #global parser
+        tokens = getrep_parser.parse_args(line)
+        if tokens.v == True:
+            module_EdgeClientCLI_getrep.get(tokens.start, tokens.end, tokens.edgeId, tokens.edgeIp, tokens.edgePort, tokens.edgeReli, tokens.fogIp, tokens.fogPort,tokens.num,True)
+            #del jsonResponse
+        else:
+            jsonResponse = module_EdgeClientCLI_getrep.get(tokens.start, tokens.end, tokens.edgeId, tokens.edgeIp, tokens.edgePort, tokens.edgeReli, tokens.fogIp, tokens.fogPort,tokens.num)
             #del jsonResponse
 
     def do_ls(self,args):
@@ -356,6 +371,26 @@ if __name__ == '__main__':
     get_parser.add_argument("--fogPort", default = str(FOG_PORT))
     get_parser.add_argument("--v","--verbose", action = "store_true")
 
+    ## Parser for getrep command
+    ## Arguments :
+    ## 1. --mbIdS
+    ## 2. --edgeId (default, based on config file)
+    ## 3. --edgeIp (default, based on config file)
+    ## 4. --edgePort (default, based on config file)
+    ## 5. --edgeReli (default, from stream metadata)
+    ## 6. --fogIp (default, based on config file)
+    ## 7. --fogPort (default, based on config file)
+    getrep_parser = subparsers.add_parser("get")
+    getrep_parser.add_argument("--start")
+    getrep_parser.add_argument("--end", default = str(-1))
+    getrep_parser.add_argument("--num",default = str(1))
+    getrep_parser.add_argument("--edgeId", default = str(EDGE_ID))
+    getrep_parser.add_argument("--edgeIp", default = EDGE_IP)
+    getrep_parser.add_argument("--edgePort", default = str(EDGE_PORT))
+    getrep_parser.add_argument("--edgeReli", default = str(EDGE_RELI))
+    getrep_parser.add_argument("--fogIp", default = FOG_IP)
+    getrep_parser.add_argument("--fogPort", default = str(FOG_PORT))
+    getrep_parser.add_argument("--v","--verbose", action = "store_true")
 
     ## Parser for ls command
     ## Arguments :
