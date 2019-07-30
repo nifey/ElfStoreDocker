@@ -1,0 +1,11 @@
+{
+    "edgeId": 73,
+    "edgeIp": "172.10.10.72",
+    "edgePort": 7072,
+    "reliability": 85,
+    "fogIp": "172.10.20.3",
+    "fogPort": 9003,
+    "logsFolder": "/edgefs/logs",
+    "baseLog": "/edgefs/baseLog",
+    "compFormat": "NA"
+}

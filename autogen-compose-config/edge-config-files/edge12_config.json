@@ -3,8 +3,8 @@
     "edgeIp": "172.10.10.11",
     "edgePort": 7011,
     "reliability": 85,
-    "fogIp": "172.10.20.2",
-    "fogPort": 9002,
+    "fogIp": "172.10.20.0",
+    "fogPort": 9000,
     "logsFolder": "/edgefs/logs",
     "baseLog": "/edgefs/baseLog",
     "compFormat": "NA"

@@ -1,7 +1,7 @@
 {
-    "edgeId": 13,
-    "edgeIp": "172.10.10.12",
-    "edgePort": 7012,
+    "edgeId": 18,
+    "edgeIp": "172.10.10.17",
+    "edgePort": 7017,
     "reliability": 85,
     "fogIp": "172.10.20.0",
     "fogPort": 9000,
