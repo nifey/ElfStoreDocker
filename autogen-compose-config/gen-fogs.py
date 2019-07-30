@@ -45,7 +45,7 @@ if __name__ == "__main__":
 
     fogFileName = "fogs-docker-compose.yml"
     edgeFileName = "edges-docker-compose.yml"
-    initializeComposeFile(fogFileName)
+    #initializeComposeFile(fogFileName)
     initializeComposeFile(edgeFileName)
 
     globalEdgeCount = 0;
@@ -53,7 +53,7 @@ if __name__ == "__main__":
     for i in range(0,FOG_COUNT):
         fogIp = FOG_SUBNET + str(i)
         fogPort = FOG_PORT + i
-        writeFog(i+1,fogIp,fogPort,fogFileName)
+        #writeFog(i+1,fogIp,fogPort,fogFileName)
         for j in range(0,EDGE_COUNT_PPART):
             edgeIp = EDGE_SUBNET + str(globalEdgeCount)
             edgePort = EDGE_PORT + globalEdgeCount
