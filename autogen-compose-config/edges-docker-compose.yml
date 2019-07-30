@@ -1,0 +1,248 @@
+version: '2.2'
+
+networks:
+  default:
+    external:
+      name: elfstore-network
+
+services:
+  edge1:
+    container_name: edge1
+    image: elfstorenojson
+    mem_limit: 4096m
+    cpus: 1
+    volumes:
+      - ./Logs/edgeClientLogs/:/edgefs/logs/
+      - ./Logs/edgeServerLogs/:/log.dir_IS_UNDEFINED/
+    networks:
+      default:
+       ipv4_addresses: 172.10.10.0
+    expose:
+      - "7000"
+    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 1 172.10.10.0 7000 88 172.10.20.0 9000  /edgedatatemp  /edgefs/logs
+
+  edge2:
+    container_name: edge2
+    image: elfstorenojson
+    mem_limit: 4096m
+    cpus: 1
+    volumes:
+      - ./Logs/edgeClientLogs/:/edgefs/logs/
+      - ./Logs/edgeServerLogs/:/log.dir_IS_UNDEFINED/
+    networks:
+      default:
+       ipv4_addresses: 172.10.10.1
+    expose:
+      - "7001"
+    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 2 172.10.10.1 7001 88 172.10.20.0 9000  /edgedatatemp  /edgefs/logs
+
+  edge3:
+    container_name: edge3
+    image: elfstorenojson
+    mem_limit: 4096m
+    cpus: 1
+    volumes:
+      - ./Logs/edgeClientLogs/:/edgefs/logs/
+      - ./Logs/edgeServerLogs/:/log.dir_IS_UNDEFINED/
+    networks:
+      default:
+       ipv4_addresses: 172.10.10.2
+    expose:
+      - "7002"
+    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 3 172.10.10.2 7002 88 172.10.20.0 9000  /edgedatatemp  /edgefs/logs
+
+  edge4:
+    container_name: edge4
+    image: elfstorenojson
+    mem_limit: 4096m
+    cpus: 1
+    volumes:
+      - ./Logs/edgeClientLogs/:/edgefs/logs/
+      - ./Logs/edgeServerLogs/:/log.dir_IS_UNDEFINED/
+    networks:
+      default:
+       ipv4_addresses: 172.10.10.3
+    expose:
+      - "7003"
+    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 4 172.10.10.3 7003 88 172.10.20.0 9000  /edgedatatemp  /edgefs/logs
+
+  edge5:
+    container_name: edge5
+    image: elfstorenojson
+    mem_limit: 4096m
+    cpus: 1
+    volumes:
+      - ./Logs/edgeClientLogs/:/edgefs/logs/
+      - ./Logs/edgeServerLogs/:/log.dir_IS_UNDEFINED/
+    networks:
+      default:
+       ipv4_addresses: 172.10.10.4
+    expose:
+      - "7004"
+    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 5 172.10.10.4 7004 88 172.10.20.1 9001  /edgedatatemp  /edgefs/logs
+
+  edge6:
+    container_name: edge6
+    image: elfstorenojson
+    mem_limit: 4096m
+    cpus: 1
+    volumes:
+      - ./Logs/edgeClientLogs/:/edgefs/logs/
+      - ./Logs/edgeServerLogs/:/log.dir_IS_UNDEFINED/
+    networks:
+      default:
+       ipv4_addresses: 172.10.10.5
+    expose:
+      - "7005"
+    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 6 172.10.10.5 7005 88 172.10.20.1 9001  /edgedatatemp  /edgefs/logs
+
+  edge7:
+    container_name: edge7
+    image: elfstorenojson
+    mem_limit: 4096m
+    cpus: 1
+    volumes:
+      - ./Logs/edgeClientLogs/:/edgefs/logs/
+      - ./Logs/edgeServerLogs/:/log.dir_IS_UNDEFINED/
+    networks:
+      default:
+       ipv4_addresses: 172.10.10.6
+    expose:
+      - "7006"
+    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 7 172.10.10.6 7006 88 172.10.20.1 9001  /edgedatatemp  /edgefs/logs
+
+  edge8:
+    container_name: edge8
+    image: elfstorenojson
+    mem_limit: 4096m
+    cpus: 1
+    volumes:
+      - ./Logs/edgeClientLogs/:/edgefs/logs/
+      - ./Logs/edgeServerLogs/:/log.dir_IS_UNDEFINED/
+    networks:
+      default:
+       ipv4_addresses: 172.10.10.7
+    expose:
+      - "7007"
+    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 8 172.10.10.7 7007 88 172.10.20.1 9001  /edgedatatemp  /edgefs/logs
+
+  edge9:
+    container_name: edge9
+    image: elfstorenojson
+    mem_limit: 4096m
+    cpus: 1
+    volumes:
+      - ./Logs/edgeClientLogs/:/edgefs/logs/
+      - ./Logs/edgeServerLogs/:/log.dir_IS_UNDEFINED/
+    networks:
+      default:
+       ipv4_addresses: 172.10.10.8
+    expose:
+      - "7008"
+    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 9 172.10.10.8 7008 88 172.10.20.2 9002  /edgedatatemp  /edgefs/logs
+
+  edge10:
+    container_name: edge10
+    image: elfstorenojson
+    mem_limit: 4096m
+    cpus: 1
+    volumes:
+      - ./Logs/edgeClientLogs/:/edgefs/logs/
+      - ./Logs/edgeServerLogs/:/log.dir_IS_UNDEFINED/
+    networks:
+      default:
+       ipv4_addresses: 172.10.10.9
+    expose:
+      - "7009"
+    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 10 172.10.10.9 7009 88 172.10.20.2 9002  /edgedatatemp  /edgefs/logs
+
+  edge11:
+    container_name: edge11
+    image: elfstorenojson
+    mem_limit: 4096m
+    cpus: 1
+    volumes:
+      - ./Logs/edgeClientLogs/:/edgefs/logs/
+      - ./Logs/edgeServerLogs/:/log.dir_IS_UNDEFINED/
+    networks:
+      default:
+       ipv4_addresses: 172.10.10.10
+    expose:
+      - "7010"
+    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 11 172.10.10.10 7010 88 172.10.20.2 9002  /edgedatatemp  /edgefs/logs
+
+  edge12:
+    container_name: edge12
+    image: elfstorenojson
+    mem_limit: 4096m
+    cpus: 1
+    volumes:
+      - ./Logs/edgeClientLogs/:/edgefs/logs/
+      - ./Logs/edgeServerLogs/:/log.dir_IS_UNDEFINED/
+    networks:
+      default:
+       ipv4_addresses: 172.10.10.11
+    expose:
+      - "7011"
+    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 12 172.10.10.11 7011 88 172.10.20.2 9002  /edgedatatemp  /edgefs/logs
+
+  edge13:
+    container_name: edge13
+    image: elfstorenojson
+    mem_limit: 4096m
+    cpus: 1
+    volumes:
+      - ./Logs/edgeClientLogs/:/edgefs/logs/
+      - ./Logs/edgeServerLogs/:/log.dir_IS_UNDEFINED/
+    networks:
+      default:
+       ipv4_addresses: 172.10.10.12
+    expose:
+      - "7012"
+    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 13 172.10.10.12 7012 88 172.10.20.3 9003  /edgedatatemp  /edgefs/logs
+
+  edge14:
+    container_name: edge14
+    image: elfstorenojson
+    mem_limit: 4096m
+    cpus: 1
+    volumes:
+      - ./Logs/edgeClientLogs/:/edgefs/logs/
+      - ./Logs/edgeServerLogs/:/log.dir_IS_UNDEFINED/
+    networks:
+      default:
+       ipv4_addresses: 172.10.10.13
+    expose:
+      - "7013"
+    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 14 172.10.10.13 7013 88 172.10.20.3 9003  /edgedatatemp  /edgefs/logs
+
+  edge15:
+    container_name: edge15
+    image: elfstorenojson
+    mem_limit: 4096m
+    cpus: 1
+    volumes:
+      - ./Logs/edgeClientLogs/:/edgefs/logs/
+      - ./Logs/edgeServerLogs/:/log.dir_IS_UNDEFINED/
+    networks:
+      default:
+       ipv4_addresses: 172.10.10.14
+    expose:
+      - "7014"
+    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 15 172.10.10.14 7014 88 172.10.20.3 9003  /edgedatatemp  /edgefs/logs
+
+  edge16:
+    container_name: edge16
+    image: elfstorenojson
+    mem_limit: 4096m
+    cpus: 1
+    volumes:
+      - ./Logs/edgeClientLogs/:/edgefs/logs/
+      - ./Logs/edgeServerLogs/:/log.dir_IS_UNDEFINED/
+    networks:
+      default:
+       ipv4_addresses: 172.10.10.15
+    expose:
+      - "7015"
+    command: java -Xms40m -Xmx200m ‬ -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer 16 172.10.10.15 7015 88 172.10.20.3 9003  /edgedatatemp  /edgefs/logs
+
