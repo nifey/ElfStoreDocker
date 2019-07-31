@@ -1,0 +1,35 @@
+version: '2.2'
+
+networks:
+  default:
+    external:
+      name: elfstore-network
+
+services:
+  fog3:
+    container_name: fog3
+    image: elfstorenojson
+    mem_limit: 4096m
+    cpus: 2
+    volumes:
+      - ./Logs/serverLogs/:/log.dir_IS_UNDEFINED/
+    networks:
+      default:
+        ipv4_address: 172.10.20.2
+    expose:
+      - "9002"
+    command: java -Xms80m -Xmx800m -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.controlplane.FogServer 172.10.20.2 9002 2 3 0.25 0
+
+  fog4:
+    container_name: fog4
+    image: elfstorenojson
+    mem_limit: 4096m
+    cpus: 2
+    volumes:
+      - ./Logs/serverLogs/:/log.dir_IS_UNDEFINED/
+    networks:
+      default:
+        ipv4_address: 172.10.20.3
+    expose:
+      - "9003"
+    command: java -Xms80m -Xmx800m -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.controlplane.FogServer 172.10.20.3 9003 2 4 0.25 0
