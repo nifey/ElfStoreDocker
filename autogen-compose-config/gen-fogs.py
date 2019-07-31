@@ -22,7 +22,7 @@ def writeFog(id, ip, port, fogFileName):
 
 def writeEdge(edgeId,edgeIp,edgePort,fogIp,fogPort,edgeFileName):
     file  = open(edgeFileName,'a',encoding='utf-8')
-    edgeCommand = "java -Xms40m -Xmx200m -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer {} {} {} 88 {} {}  /edgedatatemp  /edgefs/logs".format(edgeId,edgeIp,edgePort,fogIp,fogPort)
+    edgeCommand = "java -Xms40m -Xmx200m -cp edgefs/cli/target/edgefilesystem-0.1-jar-with-dependencies.jar com.dreamlab.edgefs.edge.server.EdgeServer {} {} {} 88 {} {}  /edgefs/data  /edgefs/logs".format(edgeId,edgeIp,edgePort,fogIp,fogPort)
     ttext  = "  edge{}:\n    container_name: edge{}\n    image: elfstorenojson\n    mem_limit: 4096m\n    cpus: 1\n    volumes:\n      - ./Logs/edgeClientLogs/:/edgefs/logs/\n      - ./Logs/edgeServerLogs/:/log.dir_IS_UNDEFINED/\n    networks:\n      default:\n       ipv4_address: {}\n    expose:\n      - \"{}\"\n    command: {}\n\n".format(str(edgeId),str(edgeId),edgeIp,str(edgePort),edgeCommand)
     file.write(ttext)
     #print(ttext)
