@@ -211,7 +211,7 @@ class EdgeClient:
                  # Connect!
                  transport.open()
 
-                 timestamp_record = str(microbatchId)+", 25 , "+ str(findReplica.node.nodeId) + " , Read req,starttime = "+repr(time.time())+","
+                 timestamp_record = str(microbatchId)+", "+compFormat+", 25 , "+ str(findReplica.node.nodeId) + " , Read req,starttime = "+repr(time.time())+","
                  response = client.read(microbatchId,0,compFormat,uncompSize) #this is for recovery
                  timestamp_record = timestamp_record +"endtime = " + repr(time.time()) + '\n'
                  myLogs = open(BASE_LOG+ "logs.txt",'a')
@@ -238,7 +238,7 @@ class EdgeClient:
                  fogNode = findReplica.node
 
                  client,transport = self.openSocketConnection(fogNode.NodeIP,fogNode.port,FOG_SERVICE)
-                 timestamp_record = str(microbatchId)+", 27 ,"+str(findReplica.node.nodeId)  + ",write req,starttime = "+repr(time.time())+","
+                 timestamp_record = str(microbatchId)+", "+compFormat+", 27 ,"+str(findReplica.node.nodeId)  + ",write req,starttime = "+repr(time.time())+","
 
                  ## retreiving the compression format and the uncompressed block size for read operation from
                  ## If you have reached here it means that the block is present in another partition and the previous
