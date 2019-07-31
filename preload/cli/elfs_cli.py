@@ -56,10 +56,10 @@ class elfsCLI(Cmd):
         tokens = regstream_parser.parse_args(line)
         if tokens.v == True:
             jsonResponse = module_EdgeClientCLI_regstream.regStream(tokens.id,tokens.reli,tokens.fogIp,tokens.fogPort,tokens.minReplica,tokens.maxReplica,True)
-            del jsonResponse
+            #del jsonResponse
         else:
             jsonResponse = module_EdgeClientCLI_regstream.regStream(tokens.id,tokens.reli,tokens.fogIp,tokens.fogPort,tokens.minReplica,tokens.maxReplica)
-            del jsonResponse
+            #del jsonResponse
 
     def do_put(self,args):
 

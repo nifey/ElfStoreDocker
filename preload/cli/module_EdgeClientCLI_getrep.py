@@ -20,11 +20,11 @@ from pprint import pprint
 import hashlib
 import contextlib
 
-if os.path.isdir("./DataAndLogs") == False:
-    os.mkdir("./DataAndLogs")
+if os.path.isdir("/edgefs/logs") == False:
+    os.mkdir("/edgefs/logs")
 
 ## the file logs.txt will be created later
-BASE_LOG = "./DataAndLogs/"
+BASE_LOG = "/edgefs/logs/"
 FOG_SERVICE = 0
 
 
@@ -139,107 +139,137 @@ class EdgeClient:
         print("closing connection")
         transport.close()
 
-    #find and read replicas for microbatches
-    def findAndRead(self, microbatchId):
+#find and read replicas for microbatches
+def findAndRead(self, microbatchId):
+    edgeInfoData = EdgeInfoData()
+    edgeInfoData.nodeId = EDGE_ID
+    edgeInfoData.nodeIp = EDGE_IP
+    edgeInfoData.port = EDGE_PORT
+    edgeInfoData.reliability = EDGE_RELIABILITY
+    edgeInfoData.storage = 12
 
-        edgeInfoData = EdgeInfoData()
-        edgeInfoData.nodeId = EDGE_ID
-        edgeInfoData.nodeIp = EDGE_IP
-        edgeInfoData.port = EDGE_PORT
-        edgeInfoData.reliability = EDGE_RELIABILITY
-        edgeInfoData.storage = 12
+    client,transport = self.openSocketConnection(FOG_IP,FOG_PORT,FOG_SERVICE)
 
-        client,transport = self.openSocketConnection(FOG_IP,FOG_PORT,FOG_SERVICE)
+    timestamp_record = str(microbatchId)+ ",23, local ,find req,starttime = "+repr(time.time())+","
 
-        timestamp_record = str(microbatchId)+ ",23, local ,find req,starttime = "+repr(time.time())+","
+    response = client.find(microbatchId,True,True,edgeInfoData)
 
-        response = client.find(microbatchId,True,True,edgeInfoData)
-        ## for obtaining compression format. required for performing read as filePath has to be formulated.
-        compFormat = str()
-        uncompSize = int()
+    timestamp_record = timestamp_record +"endtime = " + repr(time.time()) + '\n'
+    print("the time stamp for find request is ",timestamp_record)
+
+    myLogs = open(BASE_LOG+ 'logs.txt','a')
+    myLogs.write(timestamp_record)
+    myLogs.close()
+
+    compFormat = str()
+    uncompSize = int()
+    ## if the response contains empty list then the search is terminated here
+    if len(response) == 0:
+        print("Length of response = 0. Replica not found, terminating here")
+        return 0,0
+    else:
+        ## the microbatch is present in the system.
+        ## for obtaining compression format and uncompressed block size. addresses the issues 1. what is the file extension?, 2. how many bytes to read from the stream.
+        ## NOTE: this will only return a result if the block metadata is present in the fog of the current partition (i.e the read is a local read)
+        ## This operation has a little overhead since it is only performed once. Another reason is in case it is a local read
+        ## then an connection to an edge is directly made. But since the edge does not maintain bock metadata map, an explicit connection to
+        ## the parent fog would have to be made once again in order to retreive the required metadata info.
+        ## Therefore since a connection to the parent fog is already being made here it is better to make a call and  retreive the indormation.
+        ## This call is just a wild guess, it may return null. If it is supposed to be a fog read, then, anyways a connection will be made to another fog,
+        ## we will fetch the format and size at that point of time.
+        ## Also the fog to which the connection will be made (for a fog read) it will definitely have the corresponding block metadata
         compFormatSize = client.requestCompFormatSize(microbatchId);
+        print(compFormatSize)
         if len(compFormatSize) !=0:
             ## i.e format and uncompressed size present
             compFormat = list(compFormatSize.keys())[0];
             uncompSize = compFormatSize[compFormat];
 
-        timestamp_record = timestamp_record +"endtime = " + repr(time.time()) + '\n'
-        print("the time stamp for find request is ",timestamp_record)
-
-        myLogs = open(BASE_LOG+ 'logs.txt','a')
-        myLogs.write(timestamp_record)
-        myLogs.close()
-
-        self.closeSocket(transport)
-        print("Sent replicas ",response)
+    self.closeSocket(transport)
+    print("Sent replicas ",response)
 
 
-        for findReplica in response :
+    for findReplica in response :
+         edgeInfoData = findReplica.edgeInfo
 
-             edgeInfoData = findReplica.edgeInfo
+         if(edgeInfoData!=None):
 
-             if(edgeInfoData!=None):
+             print("edgeInfoRecv from fog ",edgeInfoData)
+             #have to read data from edge
 
-                 print("edgeInfoRecv from fog ",edgeInfoData)
-                 #have to read data from edge
+             transport = TSocket.TSocket(edgeInfoData.nodeIp,edgeInfoData.port)
 
-                 transport = TSocket.TSocket(edgeInfoData.nodeIp,edgeInfoData.port)
+             # Buffering is critical. Raw sockets are very slow
+             transport = TTransport.TFramedTransport(transport)
 
-                 # Buffering is critical. Raw sockets are very slow
-                 transport = TTransport.TFramedTransport(transport)
+             # Wrap in a protocol
+             protocol = TBinaryProtocol.TBinaryProtocol(transport)
 
-                 # Wrap in a protocol
-                 protocol = TBinaryProtocol.TBinaryProtocol(transport)
+             # Create a client to use the protocol encoder
+             client = EdgeService.Client(protocol)
 
-                 # Create a client to use the protocol encoder
-                 client = EdgeService.Client(protocol)
+             # Connect!
+             transport.open()
 
-                 # Connect!
-                 transport.open()
+             timestamp_record = str(microbatchId)+", 25 , "+ str(findReplica.node.nodeId) + " , Read req,starttime = "+repr(time.time())+","
+             response = client.read(microbatchId,0,compFormat,uncompSize) #this is for recovery
+             timestamp_record = timestamp_record +"endtime = " + repr(time.time()) + '\n'
+             myLogs = open(BASE_LOG+ "logs.txt",'a')
+             myLogs.write(timestamp_record)
+             myLogs.close()
+             #print response
+             print("Read status is ",response.status)
+             if response.status==0 :
+                 print("File not found : cannot read file")
+                 return 0,0
 
-                 timestamp_record = str(microbatchId)+", 25 , "+ str(findReplica.node.nodeId) + " , Read req,starttime = "+repr(time.time())+","
-                 response = client.read(microbatchId,0,compFormat,uncompSize) #this is for recovery
-                 timestamp_record = timestamp_record +"endtime = " + repr(time.time()) + '\n'
-                 myLogs = open(BASE_LOG+ "logs.txt",'a')
-                 myLogs.write(timestamp_record)
-                 myLogs.close()
-                 #print response
-                 print("Read status is ",response.status)
-                 if response.status==0 :
-                     print("File not found : cannot read file")
-
-                 else:
-                     #self.formulateJsonResponse(microbatchId,response)
-                     bytesRead = len(response.data)
-                     print("Local Read ",len(response.data)," number of bytes")
-                     print("metadata also read ",response.metadata)
-                     return 1,bytesRead #successful read
-
-                 transport.close()
-             elif(findReplica.node!=None) :
-
-                 fogNode = findReplica.node
-
-                 client,transport = self.openSocketConnection(fogNode.NodeIP,fogNode.port,FOG_SERVICE)
-
-                 timestamp_record = str(microbatchId)+", 27 ,"+str(findReplica.node.nodeId)  + ",write req,starttime = "+repr(time.time())+","
-                 response = client.read(microbatchId,0,compFormat,uncompSize)
-                 timestamp_record = timestamp_record +"endtime = " + repr(time.time()) + '\n'
-                 myLogs = open(BASE_LOG+ "logs.txt",'a')
-                 myLogs.write(timestamp_record)
-                 myLogs.close()
-                 if(response.status == 1):
-                     #self.formulateJsonResponse(microbatchId,response)
-                     bytesRead = len(response.data)
-                     print("Fog Amount of bytes read ",len(response.data))
-                     return 1,bytesRead #successful read
-                 else:
-                     print("The queried fog does not have data")
-
-                 self.closeSocket(transport)
+             elif response.status==1:
+                 #self.formulateJsonResponse(microbatchId,response)
+                 bytesRead = len(response.data)
+                 print("Local Read ",len(response.data)," number of bytes")
+                 print("metadata also read ",response.metadata)
+                 return 1,bytesRead #successful read
              else:
+                 return response.code,0
 
+             transport.close()
+         elif(findReplica.node!=None) :
+
+             fogNode = findReplica.node
+
+             client,transport = self.openSocketConnection(fogNode.NodeIP,fogNode.port,FOG_SERVICE)
+             timestamp_record = str(microbatchId)+", 27 ,"+str(findReplica.node.nodeId)  + ",write req,starttime = "+repr(time.time())+","
+
+             ## retreiving the compression format and the uncompressed block size for read operation from
+             ## If you have reached here it means that the block is present in another partition and the previous
+             ## 'client.requestCompFormatSize()' would definitely have returned null.
+             ## (Since no block in a partition => no metadata of that block maintained by fog of that particular partition)
+             ## Therefore fetch the format and size with the following call. This call will definitely return an entry.
+             compFormat = str()
+             uncompSize = int()
+             compFormatSize = client.requestCompFormatSize(microbatchId);
+             if len(compFormatSize) !=0:
+                 ## i.e format and uncompressed size present
+                 compFormat = list(compFormatSize.keys())[0];
+                 uncompSize = compFormatSize[compFormat];
+
+             response = client.read(microbatchId,0,compFormat,uncompSize)
+             timestamp_record = timestamp_record +"endtime = " + repr(time.time()) + '\n'
+             myLogs = open(BASE_LOG+ "logs.txt",'a')
+             myLogs.write(timestamp_record)
+             myLogs.close()
+             if(response.status == 1):
+                 #self.formulateJsonResponse(microbatchId,response)
+                 bytesRead = len(response.data)
+                 print("Fog Amount of bytes read ",len(response.data))
+                 return 1,bytesRead #successful read
+             else:
                  print("The queried fog does not have data")
+                 return response.status,0
+
+             self.closeSocket(transport)
+         else:
+             print("The queried fog does not have data")
 
 
 def get(start,end,edgeId,edgeIp,edgePort,edgeReliability,fogIp,fogPort, num, verbose = False):
