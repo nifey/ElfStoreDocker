@@ -8,3 +8,9 @@ RUN mkdir /edgefs/testData
 COPY TestData/ /edgefs/testData
 RUN mkdir /edgefs/logs
 RUN mkdir /edgefs/data
+
+RUN echo "#!/bin/bash" >> /tc_rule.sh
+RUN echo "tc qdisc add dev eth0 root tbf rate 1mbit burst 32kbit latency 400ms"  >> /tc_rule.sh
+RUN chmod a+x /upload.sh
+
+ENTRYPOINT exec /upload.sh
