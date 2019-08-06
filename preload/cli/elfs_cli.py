@@ -107,10 +107,10 @@ class elfsCLI(Cmd):
         ## parse the tokens using the previously defined #global parser
         tokens = get_parser.parse_args(line)
         if tokens.v == True:
-            module_EdgeClientCLI_get.get(tokens.start, tokens.end, tokens.edgeId, tokens.edgeIp, tokens.edgePort, tokens.edgeReli, tokens.fogIp, tokens.fogPort,True)
+            module_EdgeClientCLI_get.get(tokens.start, tokens.end, tokens.edgeId, tokens.edgeIp, tokens.edgePort, tokens.edgeReli, tokens.fogIp, tokens.fogPort,tokens.randnum,True)
             #del jsonResponse
         else:
-            module_EdgeClientCLI_get.get(tokens.start, tokens.end, tokens.edgeId, tokens.edgeIp, tokens.edgePort, tokens.edgeReli, tokens.fogIp, tokens.fogPort)
+            module_EdgeClientCLI_get.get(tokens.start, tokens.end, tokens.edgeId, tokens.edgeIp, tokens.edgePort, tokens.edgeReli, tokens.fogIp, tokens.fogPort,tokens.randnum)
             #del jsonResponse
 
     def do_getrep(self,args):
@@ -360,6 +360,7 @@ if __name__ == '__main__':
     ## 5. --edgeReli (default, from stream metadata)
     ## 6. --fogIp (default, based on config file)
     ## 7. --fogPort (default, based on config file)
+    ## 8. --randnum (default, -1)
     get_parser = subparsers.add_parser("get")
     get_parser.add_argument("--start")
     get_parser.add_argument("--end", default = str(-1))
@@ -369,6 +370,7 @@ if __name__ == '__main__':
     get_parser.add_argument("--edgeReli", default = str(EDGE_RELI))
     get_parser.add_argument("--fogIp", default = FOG_IP)
     get_parser.add_argument("--fogPort", default = str(FOG_PORT))
+    get_parser.add_argument("--randnum", default = str(-1))
     get_parser.add_argument("--v","--verbose", action = "store_true")
 
     ## Parser for getrep command
