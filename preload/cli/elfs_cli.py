@@ -17,6 +17,7 @@ import module_EdgeClientCLI_ls
 import module_EdgeClientCLI_find
 import module_EdgeClientCLI_putlarge
 import module_EdgeClientCLI_getrep
+import module_EdgeClientCLI_updatestreammeta
 
 ## Global parameters
 EDGE_ID = int()
@@ -59,6 +60,19 @@ class elfsCLI(Cmd):
             #del jsonResponse
         else:
             jsonResponse = module_EdgeClientCLI_regstream.regStream(tokens.id,tokens.reli,tokens.fogIp,tokens.fogPort,tokens.minReplica,tokens.maxReplica)
+            #del jsonResponse
+
+    def do_updatestream(self,args):
+        ## here args includes everyting after the invokation command
+        ## split the args starting using shlex into tokens
+        line = shlex.split(args)
+        ## parse the tokens using the previously defined #global parser
+        tokens = updatestream_parser.parse_args(line)
+        if tokens.v == True:
+            jsonResponse = module_EdgeClientCLI_updatestreammeta.updateMeta(tokens.id,tokens.fogIp,tokens.fogPort,tokens.num,True)
+            #del jsonResponse
+        else:
+            jsonResponse = module_EdgeClientCLI_updatestreammeta.updateMeta(tokens.id,tokens.fogIp,tokens.fogPort,tokens.num)
             #del jsonResponse
 
     def do_put(self,args):
@@ -295,6 +309,19 @@ if __name__ == '__main__':
     regstream_parser.add_argument("--maxReplica", default = str(5))
     regstream_parser.add_argument("--v","--verbose", action = "store_true")
 
+    ## Parser for updatestream Command
+    ## Arguments :
+    ## 1. --streamId
+    ## 2. --num (default, 1)
+    ## 3. --fogIp (default, based on config file)
+    ## 4. --fogPort (default, based on config file)
+    updatestream_parser = subparsers.add_parser("updatestream")
+    updatestream_parser.add_argument("--id")
+    updatestream_parser.add_argument("--num", default = str(1))
+    updatestream_parser.add_argument("--fogIp",default = FOG_IP)
+    updatestream_parser.add_argument("--fogPort", default = str(FOG_PORT))
+    updatestream_parser.add_argument("--v","--verbose", action = "store_true")
+
     ## Parser for put command
     ## Arguments :
     ## 1. --path
@@ -372,6 +399,7 @@ if __name__ == '__main__':
     get_parser.add_argument("--fogPort", default = str(FOG_PORT))
     get_parser.add_argument("--randnum", default = str(-1))
     get_parser.add_argument("--v","--verbose", action = "store_true")
+
 
     ## Parser for getrep command
     ## Arguments :
