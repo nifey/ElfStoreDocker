@@ -21,7 +21,7 @@ import hashlib
 import contextlib
 
 #if os.path.isdir("/edgefs/logs") == False:
-    os.mkdir("/edgefs/logs")
+#    os.mkdir("/edgefs/logs")
 
 ## the file logs.txt will be created later
 BASE_LOG = str() #"/edgefs/logs/"
