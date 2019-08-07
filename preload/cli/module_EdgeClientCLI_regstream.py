@@ -178,10 +178,8 @@ def regStream(streamId,streamReli,fogIp,fogPort,kmin,kmax,baseLogPath,verbose = 
     global BASE_LOG
     BASE_LOG = baseLogPath
 
-    if os.path.isdir(BASE_LOG) == False:
-        os.mkdir(BASE_LOG)
+    if os.path.isdir(BASE_LOG) == False: os.mkdir(BASE_LOG)
 
-    if
     myEdge = EdgeClient()
     if verbose == True:
         response = myEdge.registerStream(STREAM_ID,START)
