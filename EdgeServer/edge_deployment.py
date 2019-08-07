@@ -93,7 +93,7 @@ for key in edgeip_to_vm:
         "fogIp":fogIp_list[i],
         "fogPort":fogPort_list[i],
         "logsFolder": "/edgefs/logs",
-        "baseLog":BASE_LOG+str(i+1),
+        "baseLog":BASE_LOG+str(i+1)+"/",
         "compFormat":"NA"
         })
     json.dump(configDict, configFile, indent = 4)
@@ -111,7 +111,7 @@ for key in edgeip_to_vm:
     ## now generate the edge server command and execut it
     start_edge_server = "sudo docker exec -i "+ key+" "+edge_command+" "+str(edgeId_list[i])+" "+str(edgeIP_list[i])+" "+ str(edgePort_list[i])+" "+str(int(reliability[i]))+" "+str(fogIp_list[i])+" "+str(fogPort_list[i])+" "+DATA_PATH+str(i+1)+" "+BASE_LOG+str(i+1)+"/"
     print str(key)
-    c.exec_command('nohup ' + start_edge_server + ' >/dev/null 2>&1 &')
+    #c.exec_command('nohup ' + start_edge_server + ' >/dev/null 2>&1 &')
     c.close()
     i = i + 1
 
@@ -139,4 +139,3 @@ for key in edgeip_to_vm:
     c.close()
 
 print "Copied edge-config-files successfully"
-

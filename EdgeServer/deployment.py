@@ -63,4 +63,3 @@ for elem in content:
 
 
 print "done copying config and starting Fog servers"
-
