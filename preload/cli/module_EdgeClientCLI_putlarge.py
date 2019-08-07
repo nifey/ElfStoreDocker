@@ -21,11 +21,11 @@ from pprint import pprint
 import hashlib
 import contextlib
 
-if os.path.isdir("/edgefs/logs") == False:
-    os.mkdir("/edgefs/logs")
+#if os.path.isdir("/edgefs/logs") == False:
+#    os.mkdir("/edgefs/logs")
 
 ## the file logs.txt will be created later
-BASE_LOG = "/edgefs/logs/"
+BASE_LOG = str() #"/edgefs/logs/"
 FOG_SERVICE = 0
 #this is assigned when the open() api succeeds
 SESSION_SECRET = 'test'
@@ -587,7 +587,7 @@ class EdgeClient:
         myLogs.write(timestamp_record)
         myLogs.close()
 
-def putlarge(path,streamId,start,metadataLocation,fogIp,fogPort,edgeId,clientId,numWrites,setLease,leaseDuration,compFormat,verbose = False):
+def putlarge(path,streamId,start,metadataLocation,fogIp,fogPort,edgeId,clientId,numWrites,setLease,leaseDuration,compFormat,baseLogPath,verbose = False):
     myEdge = EdgeClient()
 
     global PATH
@@ -613,6 +613,13 @@ def putlarge(path,streamId,start,metadataLocation,fogIp,fogPort,edgeId,clientId,
     EXPECTED_LEASE = int(leaseDuration)
     global COMP_FORMAT
     COMP_FORMAT = compFormat
+
+    ## create the directory for edge client logs if it does not exist
+    global BASE_LOG
+    BASE_LOG = baseLogPath
+
+    if os.path.isdir(BASE_LOG) == False:
+        os.mkdir(BASE_LOG)
 
     print("here")
     print("The stream reliability needed is : ", str(STREAM_RELIABILITY))

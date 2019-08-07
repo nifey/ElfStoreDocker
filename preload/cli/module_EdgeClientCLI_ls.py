@@ -20,11 +20,11 @@ from pprint import pprint
 import hashlib
 import contextlib
 
-if os.path.isdir("/edgefs/logs") == False:
-    os.mkdir("/edgefs/logs")
+#if os.path.isdir("/edgefs/logs") == False:
+#    os.mkdir("/edgefs/logs")
 
 ## the file logs.txt will be created later
-BASE_LOG = "/edgefs/logs/"
+BASE_LOG = str() #"/edgefs/logs/"
 FOG_SERVICE = 0
 
 FOG_IP = str()
@@ -329,7 +329,7 @@ def printMbidMap(mbids,groupBy):
             print("Microbatch "+str(mbId)+": "+str(list(set(mbids[mbId]))) + "\n")
 
 
-def ls(fogIp,fogPort,choice,groupBy,verbose = False):
+def ls(fogIp,fogPort,choice,groupBy,baseLogPath,verbose = False):
     global FOG_IP
     FOG_IP = fogIp
     global FOG_PORT
@@ -338,6 +338,13 @@ def ls(fogIp,fogPort,choice,groupBy,verbose = False):
     CHOICE = int(choice)
     global GROUP_BY
     GROUP_BY = int(groupBy)
+
+    ## create the directory for edge client logs if it does not exist
+    global BASE_LOG
+    BASE_LOG = baseLogPath
+
+    if os.path.isdir(BASE_LOG) == False:
+        os.mkdir(BASE_LOG)
 
     myEdge = EdgeClient()
 

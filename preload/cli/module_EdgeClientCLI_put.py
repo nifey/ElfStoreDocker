@@ -21,11 +21,11 @@ from pprint import pprint
 import hashlib
 import contextlib
 
-if os.path.isdir("/edgefs/logs") == False:
-    os.mkdir("/edgefs/logs")
+#if os.path.isdir("/edgefs/logs") == False:
+#    os.mkdir("/edgefs/logs")
 
 ## the file logs.txt will be created later
-BASE_LOG = "/edgefs/logs/"
+BASE_LOG = str() #"/edgefs/logs/"
 FOG_SERVICE = 0
 #this is assigned when the open() api succeeds
 SESSION_SECRET = 'test'
@@ -593,7 +593,7 @@ class EdgeClient:
         myLogs.write(timestamp_record)
         myLogs.close()
 
-def put(path,streamId,start,metadataLocation,fogIp,fogPort,edgeId,clientId,splitChoice,setLease,leaseDuration,compFormat,verbose = False):
+def put(path,streamId,start,metadataLocation,fogIp,fogPort,edgeId,clientId,splitChoice,setLease,leaseDuration,compFormat,baseLogPath,verbose = False):
     myEdge = EdgeClient()
 
     global PATH
@@ -618,6 +618,14 @@ def put(path,streamId,start,metadataLocation,fogIp,fogPort,edgeId,clientId,split
     EXPECTED_LEASE = int(leaseDuration)
     global COMP_FORMAT
     COMP_FORMAT = compFormat
+
+
+    ## create the directory for edge client logs if it does not exist
+    global BASE_LOG
+    BASE_LOG = baseLogPath
+
+    if os.path.isdir(BASE_LOG) == False:
+        os.mkdir(BASE_LOG)
 
     ## Initialize the metaKeyValueMap dict. This dicionary/map comtains the optional metadata
     ## properties that can be specified by the end user during runtime.

@@ -20,11 +20,11 @@ from pprint import pprint
 import hashlib
 import contextlib
 
-if os.path.isdir("/edgefs/logs") == False:
-    os.mkdir("/edgefs/logs")
+#if os.path.isdir("/edgefs/logs") == False:
+#    os.mkdir("/edgefs/logs")
 
 ## the file logs.txt will be created later
-BASE_LOG = "/edgefs/logs/"
+BASE_LOG = str() #"/edgefs/logs/"
 FOG_SERVICE = 0
 
 
@@ -132,7 +132,7 @@ class EdgeClient:
         return result.code
 
 
-def updateMeta(streamId,fogIp,fogPort,num,verbose = False):
+def updateMeta(streamId,fogIp,fogPort,num,baseLogPath,verbose = False):
     global STREAM_ID
     STREAM_ID = streamId
     global FOG_IP
@@ -143,6 +143,14 @@ def updateMeta(streamId,fogIp,fogPort,num,verbose = False):
     NUM = int(num)
     global START
     START = 700
+
+    ## create the directory for edge client logs if it does not exist
+    global BASE_LOG
+    BASE_LOG = baseLogPath
+
+    if os.path.isdir(BASE_LOG) == False:
+        os.mkdir(BASE_LOG)
+
     myEdge = EdgeClient()
 
     if verbose == True:

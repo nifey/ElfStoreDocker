@@ -20,11 +20,11 @@ from pprint import pprint
 import hashlib
 import contextlib
 
-if os.path.isdir("/edgefs/logs") == False:
+#if os.path.isdir("/edgefs/logs") == False:
     os.mkdir("/edgefs/logs")
 
 ## the file logs.txt will be created later
-BASE_LOG = "/edgefs/logs/"
+BASE_LOG = str() #"/edgefs/logs/"
 FOG_SERVICE = 0
 
 
@@ -272,7 +272,7 @@ def findAndRead(self, microbatchId):
              print("The queried fog does not have data")
 
 
-def get(start,end,edgeId,edgeIp,edgePort,edgeReliability,fogIp,fogPort, num, verbose = False):
+def get(start,end,edgeId,edgeIp,edgePort,edgeReliability,fogIp,fogPort, num,baseLogPath, verbose = False):
     if int(end) == -1 : end = start
     global START
     START = int(start)
@@ -292,6 +292,14 @@ def get(start,end,edgeId,edgeIp,edgePort,edgeReliability,fogIp,fogPort, num, ver
     FOG_PORT = int(fogPort)
     global JSON_RESPONSE
     num = int(num)
+
+    ## create the directory for edge client logs if it does not exist
+    global BASE_LOG
+    BASE_LOG = baseLogPath
+
+    if os.path.isdir(BASE_LOG) == False:
+        os.mkdir(BASE_LOG)
+
 
     myEdge = EdgeClient()
 
