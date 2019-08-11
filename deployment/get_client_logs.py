@@ -7,6 +7,8 @@ deployment_output = json.load(open("deployment_output.json"))
 copy_done_vm = {}
 key_path = "/home/dreamlab/.ssh/id_rsa"
 
+if os.path.isdir("/home/dreamlab/EdgeClientLogs") == False:
+    os.mkdir("/home/dreamlab/EdgeClientLogs")
 
 fog_to_privateip = {}
 privateip_to_fog = {}
@@ -43,7 +45,6 @@ for key in edgeip_to_vm:
 
 
 for vm_ip in vm_set:
-    os.system("sudo scp -i {0} -r dreamlab@{1}:/home/dreamlab/Logs/ /home/dreamlab/packemLogs/".format(key_path, vm_ip))
+    os.system("sudo scp -i {0} -r dreamlab@{1}:/home/dreamlab/Logs/ /home/dreamlab/EdgeClientLogs/".format(key_path, vm_ip))
 
 print "Fetched edge client logs from all vms successfully"
-
