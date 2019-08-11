@@ -14,6 +14,7 @@ fog_to_privateip = {}
 privateip_to_fog = {}
 edgeip_to_vm = {}
 fogno_to_globalpublicip ={}
+vm_copy_status = {}
 
 for key in deployment_output :
     if "Fog" in key:
@@ -75,6 +76,7 @@ for key in edgeip_to_vm:
     fogIp_list.append(fogno_to_globalpublicip[int(key[5])])
     fogPort_list.append(fogPort)
     vm_ip = edgeip_to_vm[key][0]
+    vm_copy_status.update({vm_ip:0})
     edge_vm.append(edgeip_to_vm[key][0])
     part_eid = key.split("-")[1].split(".")
     part_eid = int(part_eid[0] + part_eid[1])
@@ -120,9 +122,9 @@ print "edge devices deployed succesfully"
 print "Now copying generated edge-config-files to all the edge containers ..."
 
 docker_copy_command = "sudo docker cp {0} {1}:/edgefs/cli/{0}"
+
 for key in edgeip_to_vm:
     vm_ip = edgeip_to_vm[key][0]
-
     k = paramiko.RSAKey.from_private_key_file(key_path)
     c = paramiko.SSHClient()
     c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -131,7 +133,12 @@ for key in edgeip_to_vm:
     ## clean up the existing edge-config-files
     c.exec_command('docker exec -i '+key+' rm -rvf /edgefs/cli/edge-config-files/')
     ## copy the new config files to the vm
-    os.system("sudo scp -i {0} -r {1} dreamlab@{2}:~".format(key_path, copy_file, vm_ip))
+    if vm_copy_status[vm_ip] == 0:    
+        ## i.e this is the first time the files are being copied to this vm.
+        os.system("sudo scp -i {0} -r {1} dreamlab@{2}:~".format(key_path, copy_file, vm_ip))
+        vm_copy_status[vm_ip] = 1
+    else:
+        pass
     ## copy the new config files from the vm to the container
     c.exec_command(docker_copy_command.format(copy_file, key))
     ## remove the edge-config-files from the vm
