@@ -135,7 +135,7 @@ def find(mbid,blockMetaLocation,streamMetaLocation,fogIp,fogPort,baseLogPath,ver
     groupBy=2
     if mbid != None and blockMetaLocation == None and streamMetaLocation == None:
         try:
-            mbids = module_EdgeClientCLI_ls.ls(fogIp,fogPort,choice,groupBy,verbose)
+            mbids = module_EdgeClientCLI_ls.ls(fogIp,fogPort,choice,groupBy,baseLogPath,verbose)
             #str(list(set(mbids[mbid])))
             print("Edges: "+str(list(set(mbids[int(mbid)]))))
         except KeyError:
