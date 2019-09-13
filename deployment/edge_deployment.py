@@ -95,7 +95,7 @@ for key in edgeip_to_vm:
         "fogIp":fogIp_list[i],
         "fogPort":fogPort_list[i],
         "logsFolder": "/edgefs/logs",
-        "baseLog":BASE_LOG+str(i+1)+"/",
+        "baseLog":BASE_LOG+str(edgeId_list[i])+"/",
         "compFormat":"NA"
         })
     json.dump(configDict, configFile, indent = 4)
@@ -111,7 +111,7 @@ for key in edgeip_to_vm:
     c.connect( hostname = vm_ip, username = "dreamlab", pkey = k)
 
     ## now generate the edge server command and execut it
-    start_edge_server = "sudo docker exec -i "+ key+" "+edge_command+" "+str(edgeId_list[i])+" "+str(edgeIP_list[i])+" "+ str(edgePort_list[i])+" "+str(int(reliability[i]))+" "+str(fogIp_list[i])+" "+str(fogPort_list[i])+" "+DATA_PATH+str(i+1)+" "+BASE_LOG+str(i+1)+"/"
+    start_edge_server = "sudo docker exec -i "+ key+" "+edge_command+" "+str(edgeId_list[i])+" "+str(edgeIP_list[i])+" "+ str(edgePort_list[i])+" "+str(int(reliability[i]))+" "+str(fogIp_list[i])+" "+str(fogPort_list[i])+" "+DATA_PATH+str(edgeId_list[i])+" "+BASE_LOG+str(edgeId_list[i])+"/"
     print str(key)
     c.exec_command('nohup ' + start_edge_server + ' >/dev/null 2>&1 &')
     c.close()
@@ -131,7 +131,7 @@ for key in edgeip_to_vm:
     c.connect( hostname = vm_ip, username = "dreamlab", pkey = k)
 
     ## clean up the existing edge-config-files
-    c.exec_command('docker exec -i '+key+' rm -rvf /edgefs/cli/edge-config-files/')
+    c.exec_command('sudo docker exec -i '+key+' rm -rvf /edgefs/cli/edge-config-files/')
     ## copy the new config files to the vm
     if vm_copy_status[vm_ip] == 0:
         ## i.e this is the first time the files are being copied to this vm.
