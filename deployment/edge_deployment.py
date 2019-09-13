@@ -131,7 +131,7 @@ for key in edgeip_to_vm:
     c.connect( hostname = vm_ip, username = "dreamlab", pkey = k)
 
     ## clean up the existing edge-config-files
-    c.exec_command('docker exec -i '+key+' rm -rvf /edgefs/cli/edge-config-files/')
+    c.exec_command('sudo docker exec -i '+key+' rm -rvf /edgefs/cli/edge-config-files/')
     ## copy the new config files to the vm
     if vm_copy_status[vm_ip] == 0:
         ## i.e this is the first time the files are being copied to this vm.
