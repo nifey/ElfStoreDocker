@@ -43,7 +43,7 @@ for key in fog_to_privateip:
 #print edgeip_to_vm
 
 # python EdgeServer.py 1 127.0.0.1 8000 8 127.0.0.1 9090 /home/swamiji/
-
+numpy.random.seed(1234)
 reliability = numpy.random.normal(90,3,len(edgeip_to_vm.keys()))
 edgeDocker_name = []
 edgeId_list = []
