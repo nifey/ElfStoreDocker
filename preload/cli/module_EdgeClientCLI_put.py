@@ -49,7 +49,7 @@ FOG_IP = str()
 FOG_PORT = int()
 EDGE_ID = int()
 CLIENT_ID = str()
-STREAM_RELIABILITY = float()
+#STREAM_RELIABILITY = float()
 ## Write file(s) as one block
 SPLIT_CHOICE = int()
 ## default block size is 10MB
@@ -612,8 +612,8 @@ def put(path,streamId,start,metadataLocation,fogIp,fogPort,edgeId,clientId,split
     CLIENT_ID = clientId
     global SPLIT_CHOICE
     SPLIT_CHOICE = int(splitChoice)
-    global STREAM_RELIABILITY
-    STREAM_RELIABILITY = myEdge.getStreamMetadataReliability(STREAM_ID)
+    #global STREAM_RELIABILITY
+    #STREAM_RELIABILITY = myEdge.getStreamMetadataReliability(STREAM_ID)
     global EXPECTED_LEASE
     EXPECTED_LEASE = int(leaseDuration)
     global COMP_FORMAT
@@ -649,7 +649,7 @@ def put(path,streamId,start,metadataLocation,fogIp,fogPort,edgeId,clientId,split
     if(os.path.isfile(PATH)):
         if SPLIT_CHOICE == 1:
             ##i.e write the whole file as a single block.
-            print("The stream reliability needed is : ", str(STREAM_RELIABILITY))
+            #print("The stream reliability needed is : ", str(STREAM_RELIABILITY))
 
             filePath = PATH
             byteArray = []
