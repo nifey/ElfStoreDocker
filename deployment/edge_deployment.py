@@ -133,10 +133,10 @@ for key in edgeip_to_vm:
     ## clean up the existing edge-config-files
     c.exec_command('sudo docker exec -i '+key+' rm -rvf /edgefs/cli/edge-config-files/')
     ## copy the new config files to the vm
-    if vm_copy_status[vm_ip] == 0:
-        ## i.e this is the first time the files are being copied to this vm.
-        os.system("sudo scp -i {0} -r {1} dreamlab@{2}:~".format(key_path, copy_file, vm_ip))
-        vm_copy_status[vm_ip] = 1
+    #if vm_copy_status[vm_ip] == 0:
+    ## i.e this is the first time the files are being copied to this vm.
+    os.system("sudo scp -i {0} -r {1} dreamlab@{2}:~".format(key_path, copy_file, vm_ip))
+    vm_copy_status[vm_ip] = 1
 
     ## copy the new config files from the vm to the container
     c.exec_command(docker_copy_command.format(copy_file, key))
