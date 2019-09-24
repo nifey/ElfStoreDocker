@@ -15,9 +15,6 @@ import module_EdgeClientCLI_get
 import module_EdgeClientCLI_put
 import module_EdgeClientCLI_ls
 import module_EdgeClientCLI_find
-import module_EdgeClientCLI_putlarge
-import module_EdgeClientCLI_getrep
-import module_EdgeClientCLI_updatestreammeta
 
 ## Global parameters
 EDGE_ID = int()
@@ -56,23 +53,10 @@ class elfsCLI(Cmd):
         ## parse the tokens using the previously defined #global parser
         tokens = regstream_parser.parse_args(line)
         if tokens.v == True:
-            jsonResponse = module_EdgeClientCLI_regstream.regStream(tokens.id,tokens.reli,tokens.fogIp,tokens.fogPort,tokens.minReplica,tokens.maxReplica,BASE_LOG,True)
+            module_EdgeClientCLI_regstream.regStream(tokens.id,tokens.reli,tokens.fogIp,tokens.fogPort,tokens.minReplica,tokens.maxReplica,True)
             #del jsonResponse
         else:
-            jsonResponse = module_EdgeClientCLI_regstream.regStream(tokens.id,tokens.reli,tokens.fogIp,tokens.fogPort,tokens.minReplica,tokens.maxReplica,BASE_LOG)
-            #del jsonResponse
-
-    def do_updatestream(self,args):
-        ## here args includes everyting after the invokation command
-        ## split the args starting using shlex into tokens
-        line = shlex.split(args)
-        ## parse the tokens using the previously defined #global parser
-        tokens = updatestream_parser.parse_args(line)
-        if tokens.v == True:
-            jsonResponse = module_EdgeClientCLI_updatestreammeta.updateMeta(tokens.id,tokens.fogIp,tokens.fogPort,tokens.num,BASE_LOG,True)
-            #del jsonResponse
-        else:
-            jsonResponse = module_EdgeClientCLI_updatestreammeta.updateMeta(tokens.id,tokens.fogIp,tokens.fogPort,tokens.num,BASE_LOG)
+            module_EdgeClientCLI_regstream.regStream(tokens.id,tokens.reli,tokens.fogIp,tokens.fogPort,tokens.minReplica,tokens.maxReplica)
             #del jsonResponse
 
     def do_put(self,args):
@@ -85,34 +69,20 @@ class elfsCLI(Cmd):
 
         splitChoice = str(0)
         setLease = str(0)
+        erasureCode = str(0)
 
         if tokens.singleBlock == True:
             splitChoice = str(1);
         if tokens.setLease == True:
             setLease = str(1)
+        if tokens.erasureCode == True:
+            erasureCode = str(1)
 
         if tokens.v == True:
-            module_EdgeClientCLI_put.put(tokens.path,tokens.streamId,tokens.start,tokens.metadata, tokens.fogIp,tokens.fogPort,tokens.edgeId,tokens.clientId,splitChoice,setLease,tokens.duration,tokens.comp,BASE_LOG,True)
+            module_EdgeClientCLI_put.put(tokens.path,tokens.streamId,tokens.start,tokens.metadata, tokens.fogIp,tokens.fogPort,tokens.edgeId,tokens.clientId,splitChoice,setLease,erasureCode,tokens.duration,tokens.comp,True)
         else:
-            module_EdgeClientCLI_put.put(tokens.path,tokens.streamId,tokens.start,tokens.metadata, tokens.fogIp,tokens.fogPort,tokens.edgeId,tokens.clientId,splitChoice,setLease,tokens.duration,tokens.comp,BASE_LOG)
+            module_EdgeClientCLI_put.put(tokens.path,tokens.streamId,tokens.start,tokens.metadata, tokens.fogIp,tokens.fogPort,tokens.edgeId,tokens.clientId,splitChoice,setLease,erasureCode,tokens.duration,tokens.comp)
 
-    def do_putlarge(self,args):
-
-        ## here args includes everyting after the invokation command
-        ## split the args starting using shlex into tokens
-        line = shlex.split(args)
-        ## parse the tokens using the previously defined #global parser
-        tokens = putlarge_parser.parse_args(line)
-
-        setLease = str(0)
-
-        if tokens.setLease == True:
-            setLease = str(1)
-
-        if tokens.v == True:
-            module_EdgeClientCLI_putlarge.putlarge(tokens.path,tokens.streamId,tokens.start,tokens.metadata, tokens.fogIp,tokens.fogPort,tokens.edgeId,tokens.clientId,tokens.numwrites,setLease,tokens.duration,tokens.comp,BASE_LOG,True)
-        else:
-            module_EdgeClientCLI_putlarge.putlarge(tokens.path,tokens.streamId,tokens.start,tokens.metadata, tokens.fogIp,tokens.fogPort,tokens.edgeId,tokens.clientId,tokens.numwrites,setLease,tokens.duration,tokens.comp,BASE_LOG)
 
     def do_get(self,args):
         ## here args includes everyting after the invokation command
@@ -121,23 +91,10 @@ class elfsCLI(Cmd):
         ## parse the tokens using the previously defined #global parser
         tokens = get_parser.parse_args(line)
         if tokens.v == True:
-            module_EdgeClientCLI_get.get(tokens.start, tokens.end, tokens.edgeId, tokens.edgeIp, tokens.edgePort, tokens.edgeReli, tokens.fogIp, tokens.fogPort,tokens.randnum,BASE_LOG,True)
+            module_EdgeClientCLI_get.get(tokens.start, tokens.end, tokens.edgeId, tokens.edgeIp, tokens.edgePort, tokens.edgeReli, tokens.fogIp, tokens.fogPort, tokens.erasureCode, True)
             #del jsonResponse
         else:
-            module_EdgeClientCLI_get.get(tokens.start, tokens.end, tokens.edgeId, tokens.edgeIp, tokens.edgePort, tokens.edgeReli, tokens.fogIp, tokens.fogPort,tokens.randnum,BASE_LOG)
-            #del jsonResponse
-
-    def do_getrep(self,args):
-        ## here args includes everyting after the invokation command
-        ## split the args starting using shlex into tokens
-        line = shlex.split(args)
-        ## parse the tokens using the previously defined #global parser
-        tokens = getrep_parser.parse_args(line)
-        if tokens.v == True:
-            module_EdgeClientCLI_getrep.get(tokens.start, tokens.end, tokens.edgeId, tokens.edgeIp, tokens.edgePort, tokens.edgeReli, tokens.fogIp, tokens.fogPort,tokens.num,BASE_LOG,True)
-            #del jsonResponse
-        else:
-            module_EdgeClientCLI_getrep.get(tokens.start, tokens.end, tokens.edgeId, tokens.edgeIp, tokens.edgePort, tokens.edgeReli, tokens.fogIp, tokens.fogPort,tokens.num,BASE_LOG)
+            module_EdgeClientCLI_get.get(tokens.start, tokens.end, tokens.edgeId, tokens.edgeIp, tokens.edgePort, tokens.edgeReli, tokens.fogIp, tokens.fogPort, tokens.erasureCode)
             #del jsonResponse
 
     def do_ls(self,args):
@@ -162,11 +119,13 @@ class elfsCLI(Cmd):
         elif tokens.neighbors == True and tokens.buddies == True:
             choice = 14
         if tokens.v == True:
-            jsonResponse = module_EdgeClientCLI_ls.ls(tokens.fogIp,tokens.fogPort,choice,groupBy,BASE_LOG,True)
-            del jsonResponse
+            ## slight memory overhead; module is required to return a response since the same module is used by the find module
+            response = module_EdgeClientCLI_ls.ls(tokens.fogIp,tokens.fogPort,choice,groupBy,True)
+            del response
         else:
-            jsonResponse = module_EdgeClientCLI_ls.ls(tokens.fogIp,tokens.fogPort,choice,groupBy,BASE_LOG)
-            del jsonResponse
+            ## slight memory overhead; module is required to return a response since the same module is used by the find module
+            response = module_EdgeClientCLI_ls.ls(tokens.fogIp,tokens.fogPort,choice,groupBy)
+            del response
 
     def do_find(self, args):
         ## here args includes everyting after the invokation command
@@ -176,9 +135,9 @@ class elfsCLI(Cmd):
         tokens = find_parser.parse_args(line)
 
         if tokens.v == True:
-            module_EdgeClientCLI_find.find(tokens.mbid,tokens.blockMeta,tokens.streamMeta,tokens.fogIp,tokens.fogPort,BASE_LOG,True)
+            module_EdgeClientCLI_find.find(tokens.mbid,tokens.blockMeta,tokens.streamMeta,tokens.fogIp,tokens.fogPort,True)
         else:
-            module_EdgeClientCLI_find.find(tokens.mbid,tokens.blockMeta,tokens.streamMeta,tokens.fogIp,tokens.fogPort,BASE_LOG)
+            module_EdgeClientCLI_find.find(tokens.mbid,tokens.blockMeta,tokens.streamMeta,tokens.fogIp,tokens.fogPort)
 
 
     def do_join(self,args):
@@ -309,19 +268,6 @@ if __name__ == '__main__':
     regstream_parser.add_argument("--maxReplica", default = str(5))
     regstream_parser.add_argument("--v","--verbose", action = "store_true")
 
-    ## Parser for updatestream Command
-    ## Arguments :
-    ## 1. --streamId
-    ## 2. --num (default, 1)
-    ## 3. --fogIp (default, based on config file)
-    ## 4. --fogPort (default, based on config file)
-    updatestream_parser = subparsers.add_parser("updatestream")
-    updatestream_parser.add_argument("--id")
-    updatestream_parser.add_argument("--num", default = str(1))
-    updatestream_parser.add_argument("--fogIp",default = FOG_IP)
-    updatestream_parser.add_argument("--fogPort", default = str(FOG_PORT))
-    updatestream_parser.add_argument("--v","--verbose", action = "store_true")
-
     ## Parser for put command
     ## Arguments :
     ## 1. --path
@@ -346,37 +292,10 @@ if __name__ == '__main__':
     put_parser.add_argument("--clientId", default = CLIENT_ID)
     put_parser.add_argument("--singleBlock", action ="store_true")
     put_parser.add_argument("--setLease", action ="store_true")
+    put_parser.add_argument("--erasureCode", action ="store_true")
     put_parser.add_argument("--duration",default=str(0))
     put_parser.add_argument("--comp",default=COMP_FORMAT)
     put_parser.add_argument("--v","--verbose", action ="store_true")
-
-    ## Parser for putlarge command
-    ## Arguments :
-    ## 1. --path
-    ## 2. --streamId
-    ## 3. --start
-    ## 4. --numwrites
-    ## 5. --metadata (default as None)
-    ## 6. --fogIp (default, based on config file)
-    ## 7. --fogPort (default, based on config file)
-    ## 8. --edgeId (default, based on config file)
-    ## 9. --clientId (default, hashed based on the edge id)
-    ## 10. --setLease (flag)
-    putlarge_parser = subparsers.add_parser("putlarge")
-    putlarge_parser.add_argument("--path")
-    putlarge_parser.add_argument("--streamId")
-    putlarge_parser.add_argument("--start")
-    putlarge_parser.add_argument("--numwrites")
-    putlarge_parser.add_argument("--metadata", default = None)
-    putlarge_parser.add_argument("--fogIp", default = FOG_IP)
-    putlarge_parser.add_argument("--fogPort", default = str(FOG_PORT))
-    putlarge_parser.add_argument("--edgeId", default = str(EDGE_ID))
-    putlarge_parser.add_argument("--clientId", default = CLIENT_ID)
-    putlarge_parser.add_argument("--singleBlock", action ="store_true")
-    putlarge_parser.add_argument("--setLease", action ="store_true")
-    putlarge_parser.add_argument("--duration",default=str(0))
-    putlarge_parser.add_argument("--comp",default=COMP_FORMAT)
-    putlarge_parser.add_argument("--v","--verbose", action ="store_true")
 
     ## Parser for get command
     ## Arguments :
@@ -387,7 +306,6 @@ if __name__ == '__main__':
     ## 5. --edgeReli (default, from stream metadata)
     ## 6. --fogIp (default, based on config file)
     ## 7. --fogPort (default, based on config file)
-    ## 8. --randnum (default, -1)
     get_parser = subparsers.add_parser("get")
     get_parser.add_argument("--start")
     get_parser.add_argument("--end", default = str(-1))
@@ -397,30 +315,9 @@ if __name__ == '__main__':
     get_parser.add_argument("--edgeReli", default = str(EDGE_RELI))
     get_parser.add_argument("--fogIp", default = FOG_IP)
     get_parser.add_argument("--fogPort", default = str(FOG_PORT))
-    get_parser.add_argument("--randnum", default = str(-1))
     get_parser.add_argument("--v","--verbose", action = "store_true")
+    get_parser.add_argument("--erasureCode", action = "store_true")
 
-
-    ## Parser for getrep command
-    ## Arguments :
-    ## 1. --mbIdS
-    ## 2. --edgeId (default, based on config file)
-    ## 3. --edgeIp (default, based on config file)
-    ## 4. --edgePort (default, based on config file)
-    ## 5. --edgeReli (default, from stream metadata)
-    ## 6. --fogIp (default, based on config file)
-    ## 7. --fogPort (default, based on config file)
-    getrep_parser = subparsers.add_parser("get")
-    getrep_parser.add_argument("--start")
-    getrep_parser.add_argument("--end", default = str(-1))
-    getrep_parser.add_argument("--num",default = str(1))
-    getrep_parser.add_argument("--edgeId", default = str(EDGE_ID))
-    getrep_parser.add_argument("--edgeIp", default = EDGE_IP)
-    getrep_parser.add_argument("--edgePort", default = str(EDGE_PORT))
-    getrep_parser.add_argument("--edgeReli", default = str(EDGE_RELI))
-    getrep_parser.add_argument("--fogIp", default = FOG_IP)
-    getrep_parser.add_argument("--fogPort", default = str(FOG_PORT))
-    getrep_parser.add_argument("--v","--verbose", action = "store_true")
 
     ## Parser for ls command
     ## Arguments :

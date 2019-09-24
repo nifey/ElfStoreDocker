@@ -22,11 +22,11 @@ import contextlib
 
 import module_EdgeClientCLI_ls
 
-#if os.path.isdir("/edgefs/logs") == False:
-#    os.mkdir("/edgefs/logs")
+if os.path.isdir("./DataAndLogs") == False:
+    os.mkdir("./DataAndLogs")
 
 ## the file logs.txt will be created later
-BASE_LOG = str() #"/edgefs/logs/"
+BASE_LOG = "./DataAndLogs/"
 FOG_SERVICE = 0
 FOG_IP = str()
 FOG_PORT = int()
@@ -113,19 +113,11 @@ class EdgeClient:
 
 
 
-def find(mbid,blockMetaLocation,streamMetaLocation,fogIp,fogPort,baseLogPath,verbose = False):
+def find(mbid,blockMetaLocation,streamMetaLocation,fogIp,fogPort,verbose = False):
     global FOG_IP
     FOG_IP = fogIp
     global FOG_PORT
     FOG_PORT = int(fogPort)
-
-    ## create the directory for edge client logs if it does not exist
-    global BASE_LOG
-    BASE_LOG = baseLogPath
-
-    if os.path.isdir(BASE_LOG) == False:
-        os.mkdir(BASE_LOG)
-
     ## Trace of this function:
     ## 1. Call lsMbIdSystem from module_EdgeClientCLI_ls with groupBy = 2 (i.e group by mbid)
     ## 2. Get the edge list for the desired mbid, convert it to a set and display.
@@ -135,7 +127,7 @@ def find(mbid,blockMetaLocation,streamMetaLocation,fogIp,fogPort,baseLogPath,ver
     groupBy=2
     if mbid != None and blockMetaLocation == None and streamMetaLocation == None:
         try:
-            mbids = module_EdgeClientCLI_ls.ls(fogIp,fogPort,choice,groupBy,baseLogPath,verbose)
+            mbids = module_EdgeClientCLI_ls.ls(fogIp,fogPort,choice,groupBy,verbose)
             #str(list(set(mbids[mbid])))
             print("Edges: "+str(list(set(mbids[int(mbid)]))))
         except KeyError:

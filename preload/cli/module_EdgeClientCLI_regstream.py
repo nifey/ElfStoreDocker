@@ -20,11 +20,11 @@ from pprint import pprint
 import hashlib
 import contextlib
 
-#if os.path.isdir("/edgefs/logs") == False:
-#    os.mkdir("/edgefs/logs")
+if os.path.isdir("./DataAndLogs") == False:
+    os.mkdir("./DataAndLogs")
 
 ## the file logs.txt will be created later
-BASE_LOG = str() #"/edgefs/logs/"
+BASE_LOG = "./DataAndLogs/"
 FOG_SERVICE = 0
 
 
@@ -158,7 +158,7 @@ class EdgeClient:
         return response
 
 
-def regStream(streamId,streamReli,fogIp,fogPort,kmin,kmax,baseLogPath,verbose = False):
+def regStream(streamId,streamReli,fogIp,fogPort,kmin,kmax,verbose = False):
     global STREAM_ID
     STREAM_ID = streamId
     global STREAM_RELIABILITY
@@ -173,13 +173,6 @@ def regStream(streamId,streamReli,fogIp,fogPort,kmin,kmax,baseLogPath,verbose = 
     KMAX = int(kmax)
     global START
     START = 700
-
-    ## create the directory for edge client logs if it does not exist
-    global BASE_LOG
-    BASE_LOG = baseLogPath
-
-    if os.path.isdir(BASE_LOG) == False: os.mkdir(BASE_LOG)
-
     myEdge = EdgeClient()
     if verbose == True:
         response = myEdge.registerStream(STREAM_ID,START)

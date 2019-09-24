@@ -20,11 +20,11 @@ from pprint import pprint
 import hashlib
 import contextlib
 
-#if os.path.isdir("/edgefs/logs") == False:
-#    os.mkdir("/edgefs/logs")
+if os.path.isdir("./DataAndLogs") == False:
+    os.mkdir("./DataAndLogs")
 
 ## the file logs.txt will be created later
-BASE_LOG = str() #"/edgefs/logs/"
+BASE_LOG = "./DataAndLogs/"
 FOG_SERVICE = 0
 
 
@@ -238,7 +238,7 @@ class EdgeClient:
                  fogNode = findReplica.node
 
                  client,transport = self.openSocketConnection(fogNode.NodeIP,fogNode.port,FOG_SERVICE)
-
+                 timestamp_record = str(microbatchId)+", "+compFormat+", 27 ,"+str(findReplica.node.nodeId)  + ",write req,starttime = "+repr(time.time())+","
 
                  ## retreiving the compression format and the uncompressed block size for read operation from
                  ## If you have reached here it means that the block is present in another partition and the previous
@@ -252,8 +252,6 @@ class EdgeClient:
                      ## i.e format and uncompressed size present
                      compFormat = list(compFormatSize.keys())[0];
                      uncompSize = compFormatSize[compFormat];
-
-                 timestamp_record = str(microbatchId)+", "+compFormat+", 27 ,"+str(findReplica.node.nodeId)  + ", Read req,starttime = "+repr(time.time())+","
 
                  response = client.read(microbatchId,0,compFormat,uncompSize)
                  timestamp_record = timestamp_record +"endtime = " + repr(time.time()) + '\n'
@@ -273,8 +271,50 @@ class EdgeClient:
              else:
                  print("The queried fog does not have data")
 
+    def readErasureCoded(self, microbatchId):
+        edgeInfoData = EdgeInfoData()
+        edgeInfoData.nodeId = EDGE_ID
+        edgeInfoData.nodeIp = EDGE_IP
+        edgeInfoData.port = EDGE_PORT
+        edgeInfoData.reliability = EDGE_RELIABILITY
+        edgeInfoData.storage = 12
 
-def get(start,end,edgeId,edgeIp,edgePort,edgeReliability,fogIp,fogPort,randnum,baseLogPath, verbose = False):
+        compFormat = str()
+        uncompSize = int()
+        client,transport = self.openSocketConnection(FOG_IP,FOG_PORT,FOG_SERVICE)
+        compFormatSize = client.requestCompFormatSize(microbatchId);
+        print(compFormatSize)
+        if len(compFormatSize) !=0:
+            compFormat = list(compFormatSize.keys())[0];
+            uncompSize = compFormatSize[compFormat];
+
+        timestamp_record = str(microbatchId)+ ",23, local ,read req,starttime = "+repr(time.time())+","
+
+        response = client.read(microbatchId, 1, compFormat, uncompSize)
+        print("Read status is ",response.status)
+        if response.status==0 :
+            print("File not found : cannot read file")
+            return 0,0
+
+        elif response.status==1:
+            bytesRead = len(response.data)
+            print("Local Read ",len(response.data)," number of bytes")
+            print("metadata also read ",response.metadata)
+            return 1,bytesRead #successful read
+        else:
+            return response.code,0
+
+
+        timestamp_record = timestamp_record +"endtime = " + repr(time.time()) + '\n'
+        print("the time stamp for read request is ",timestamp_record)
+
+        myLogs = open(BASE_LOG+ 'logs.txt','a')
+        myLogs.write(timestamp_record)
+        myLogs.close()
+
+        self.closeSocket(transport)
+
+def get(start,end,edgeId,edgeIp,edgePort,edgeReliability,fogIp,fogPort,erasureCode, verbose = False):
     if int(end) == -1 : end = start
     global START
     START = int(start)
@@ -293,55 +333,32 @@ def get(start,end,edgeId,edgeIp,edgePort,edgeReliability,fogIp,fogPort,randnum,b
     global FOG_PORT
     FOG_PORT = int(fogPort)
     global JSON_RESPONSE
-
-    ## create the directory for edge client logs if it does not exist
-    global BASE_LOG
-    BASE_LOG = baseLogPath
-
-    if os.path.isdir(BASE_LOG) == False:
-        os.mkdir(BASE_LOG)
-
     myEdge = EdgeClient()
-    randnum = int(randnum)
 
     if verbose == True:
-        if randnum != -1:
-            r = 0
-            while r<= randnum:
-                sample = random.randint(START,END)
-                responseCode,bytesRead = myEdge.findAndRead(sample)
-                r = r + 1
-        else:
-            i = START
-            while i<=END:
+        i = START
+        while i<=END:
+            if erasureCode == True:
+                responseCode,bytesRead = myEdge.readErasureCoded(i)
+            else:
                 responseCode,bytesRead = myEdge.findAndRead(i)
-                i = i + 1
-
+            i = i + 1
     else:
-        if randnum != -1:
-            r = 0
-            while r< randnum:
-                bytesRead = 0
-                responseCode = 0;
-                sample = random.randint(START,END)
-                with nostdout():
-                    responseCode,bytesRead = myEdge.findAndRead(sample)
-                sys.stdout = sys.__stdout__
-                if responseCode!=1 : print("Read response for microbatch "+str(sample)+" is : \nfailure  \nNo. of bytes read = 0\n"+"Response Code: "+str(responseCode))
-                else :  print("Read response for microbatch "+str(sample)+" is : \nsuccess \nNo. of bytes read = "+str(bytesRead)+"\n")
-                r = r + 1
-        else:
-            i = START
-            while i<=END:
-                bytesRead = 0
-                responseCode = 0;
-                with nostdout():
+
+        i = START
+        while i<=END:
+            bytesRead = 0
+            responseCode = 0;
+            with nostdout():
+                if erasureCode == True:
+                    responseCode,bytesRead = myEdge.readErasureCoded(i)
+                else:
                     responseCode,bytesRead = myEdge.findAndRead(i)
-                sys.stdout = sys.__stdout__
-                #print "Read response for microbatch "+str(i)+" is : \nResponse = "+str(JSON_RESPONSE[i]['status'])+" \nNo. of bytes read = "+str(len(JSON_RESPONSE[i]['data']))+"\n"
-                if responseCode!=1 : print("Read response for microbatch "+str(i)+" is : \nfailure  \nNo. of bytes read = 0\n"+"Response Code: "+str(responseCode))
-                else :  print("Read response for microbatch "+str(i)+" is : \nsuccess \nNo. of bytes read = "+str(bytesRead)+"\n")
-                i = i + 1
+            sys.stdout = sys.__stdout__
+            #print "Read response for microbatch "+str(i)+" is : \nResponse = "+str(JSON_RESPONSE[i]['status'])+" \nNo. of bytes read = "+str(len(JSON_RESPONSE[i]['data']))+"\n"
+            if responseCode!=1 : print("Read response for microbatch "+str(i)+" is : \nfailure  \nNo. of bytes read = 0\n"+"Response Code: "+str(responseCode))
+            else :  print("Read response for microbatch "+str(i)+" is : \nsuccess \nNo. of bytes read = "+str(bytesRead)+"\n")
+            i = i + 1
 
     #jsonResponse = JSON_RESPONSE
 
