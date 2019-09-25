@@ -52,7 +52,7 @@ if __name__ == '__main__':
     erasureCode = str(sys.argv[6])
     SLEEP_TIME = sys.argv[7]
     MBID_TAG = ""
-    if sys.argv[8] != -1:
+    if int(sys.argv[8]) != -1:
         MBID_TAG = str(sys.argv[8])
 
     if int(PUT_TIMES) == -1:

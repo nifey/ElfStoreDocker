@@ -288,10 +288,19 @@ class EdgeClient:
             compFormat = list(compFormatSize.keys())[0];
             uncompSize = compFormatSize[compFormat];
 
-        timestamp_record = str(microbatchId)+ ",23, local ,read req,starttime = "+repr(time.time())+","
+        timestamp_record = str(microbatchId)+ ",readErasureCoded,starttime="+repr(time.time())+","
 
         response = client.read(microbatchId, 1, compFormat, uncompSize)
         print("Read status is ",response.status)
+
+        timestamp_record = timestamp_record +"endtime=" + repr(time.time()) +",status="+ str(response.status) + '\n'
+
+        myLogs = open(BASE_LOG+ 'logs.txt','a')
+        myLogs.write(timestamp_record)
+        myLogs.close()
+
+        self.closeSocket(transport)
+
         if response.status==0 :
             print("File not found : cannot read file")
             return 0,0
@@ -305,14 +314,6 @@ class EdgeClient:
             return response.code,0
 
 
-        timestamp_record = timestamp_record +"endtime = " + repr(time.time()) + '\n'
-        print("the time stamp for read request is ",timestamp_record)
-
-        myLogs = open(BASE_LOG+ 'logs.txt','a')
-        myLogs.write(timestamp_record)
-        myLogs.close()
-
-        self.closeSocket(transport)
 
 def get(start,end,edgeId,edgeIp,edgePort,edgeReliability,fogIp,fogPort,erasureCode, verbose = False):
     if int(end) == -1 : end = start
