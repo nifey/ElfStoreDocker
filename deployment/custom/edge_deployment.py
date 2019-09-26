@@ -115,7 +115,7 @@ for key in edgeip_to_vm:
     c.connect( hostname = vm_ip, username = vm_username, pkey = k)
 
     ## now generate the edge server command and execut it
-    start_edge_server = "sudo docker exec -i "+ key+" "+edge_command+" "+str(edgeId_list[i])+" "+str(edgeIP_list[i])+" "+ str(edgePort_list[i])+" "+str(int(reliability[i]))+" "+str(fogIp_list[i])+" "+str(fogPort_list[i])+" "+DATA_PATH+str(edgeId_list[i])+" "+BASE_LOG+str(edgeId_list[i])+"/"
+    start_edge_server = "sudo docker exec -i "+ key+" "+edge_command+" "+str(edgeId_list[i])+" "+str(edgeIP_list[i])+" "+ str(edgePort_list[i])+" "+str(int(reliability[i]))+" "+str(fogIp_list[i])+" "+str(fogPort_list[i])+" "+DATA_PATH+str(edgeId_list[i])+" "+BASE_LOG+str(edgeId_list[i])+"/ 262144000"
     print str(key)
     c.exec_command('nohup ' + start_edge_server + ' >/dev/null 2>&1 &')
     c.close()
