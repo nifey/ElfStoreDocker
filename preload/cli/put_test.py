@@ -16,7 +16,7 @@ COMP_FORMAT = str()
 
 def do_put(path,streamId,start,metadata,fogIp,fogPort,edgeId,clientId,duration,comp,erasureCode):
     splitChoice = str(1)
-    setLease = str(1)
+    setLease = str(0)
     return module_EdgeClientCLI_put.put(path,streamId,start,metadata, fogIp,fogPort,edgeId,clientId,splitChoice,setLease,erasureCode,duration,comp)
 
 
